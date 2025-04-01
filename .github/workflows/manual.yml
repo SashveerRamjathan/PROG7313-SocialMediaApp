@@ -67,21 +67,21 @@ jobs:
 
       # Step 11: Upload the Debug APK as an artifact to GitHub Actions
       - name: Upload APK Debug - ${{ env.repository_name }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK Debug
           path: ${{ env.main_project_module }}/build/outputs/apk/debug/
 
       # Step 12: Upload the Release APK as an artifact to GitHub Actions
       - name: Upload APK Release - ${{ env.repository_name }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK Release
           path: ${{ env.main_project_module }}/build/outputs/apk/release/
 
       # Step 13: Upload the AAB package for Play Store deployment
       - name: Upload AAB (App Bundle) - ${{ env.repository_name }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - App Bundle AAB
           path: ${{ env.main_project_module }}/build/outputs/bundle/release/
