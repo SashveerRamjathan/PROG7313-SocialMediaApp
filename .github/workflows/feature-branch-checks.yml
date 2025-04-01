@@ -1,0 +1,56 @@
+name: Build and Test on Push (All Branches Except Main)
+
+on:
+  push:
+    branches-ignore:
+      - main  # Run on all branches except main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Java environment for Gradle with caching
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      # Cache Gradle dependencies for faster builds
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # Cache Gradle build outputs
+      - name: Cache Gradle build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/build
+          key: build-${{ runner.os }}-${{ github.ref }}-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            build-${{ runner.os }}-${{ github.ref }}-
+
+      # Change permissions for Gradle wrapper
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      # Run tests
+      - name: Run Gradle tests
+        run: ./gradlew test
+
+      # Build the project
+      - name: Build project
+        run: ./gradlew build
