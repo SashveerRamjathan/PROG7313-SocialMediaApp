@@ -1,0 +1,87 @@
+name: Generated APK AAB (Upload - Create Artifact To Github Action)
+
+# Define environment variables used throughout the workflow
+env: 
+  main_project_module: app  # The name of the main module repository
+  playstore_name: FakeBook  # The name of the Play Store app (only for naming artifacts)
+
+on: 
+  # Run the workflow when a pull request is merged into the 'main' branch
+  pull_request:
+    branches:
+      - 'main'
+    types: 
+      - closed  # Ensures it only runs when the PR is merged (not just opened)
+
+  # Allows you to manually trigger this workflow from the GitHub Actions tab
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment for consistency
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set the current date as an environment variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Step 3: Extract repository name and store as an environment variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_ENV
+
+      # Step 4: Set up Java Development Kit (JDK) for building the app
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'  # Uses the Zulu OpenJDK distribution
+          java-version: '17'
+          cache: 'gradle'  # Cache Gradle dependencies to speed up builds
+
+      # Step 5: Grant execution permissions to the Gradle wrapper
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      # Step 6: Run unit tests before building the project
+      - name: Run gradle tests
+        run: ./gradlew test
+
+      # Step 7: Build the project using Gradle
+      - name: Build gradle project
+        run: ./gradlew build
+
+      # Step 8: Generate a debug APK
+      - name: Build APK (Debug) - ${{ env.main_project_module }}
+        run: ./gradlew assembleDebug
+
+      # Step 9: Generate a release APK
+      - name: Build APK (Release) - ${{ env.main_project_module }}
+        run: ./gradlew assembleRelease
+
+      # Step 10: Generate an AAB (Android App Bundle) for Play Store deployment
+      - name: Build App Bundle (AAB) - ${{ env.main_project_module }}
+        run: ./gradlew ${{ env.main_project_module }}:bundleRelease
+
+      # Step 11: Upload the Debug APK as an artifact to GitHub Actions
+      - name: Upload APK Debug - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK Debug
+          path: ${{ env.main_project_module }}/build/outputs/apk/debug/
+
+      # Step 12: Upload the Release APK as an artifact to GitHub Actions
+      - name: Upload APK Release - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK Release
+          path: ${{ env.main_project_module }}/build/outputs/apk/release/
+
+      # Step 13: Upload the AAB package for Play Store deployment
+      - name: Upload AAB (App Bundle) - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - App Bundle AAB
+          path: ${{ env.main_project_module }}/build/outputs/bundle/release/
