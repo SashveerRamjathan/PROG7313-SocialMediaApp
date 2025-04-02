@@ -5,13 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    android:layout_margin="10dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main View"
+        android:text="Login View"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_margin="5dp"
@@ -20,8 +21,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:id="@+id/btn_logout"
+        android:text="Register"
+        android:id="@+id/btn_register"
         android:layout_marginTop="100dp"
         android:layout_gravity="center"/>
 
