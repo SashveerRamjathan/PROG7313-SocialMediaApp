@@ -7,4 +7,19 @@
     <string name="password_hint">Password</string>
     <string name="login_button">Login</string>
     <string name="register_text">Don\'t have an account? Register</string>
+
+    // Register - Email and Password
+    <string name="register_title">Create Account Credentials</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="next_button_text">Next</string>
+    <string name="login_prompt_text">Already have an account? Login Here</string>
+
+    // Register - Profile
+    <string name="create_profile_title">Create Your Profile</string>
+    <string name="profile_image_desc">Profile picture</string>
+    <string name="add_profile_picture">Add Profile Picture</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="username_hint">Username</string>
+    <string name="bio_hint">Bio</string>
+    <string name="create_account">Create Account</string>
 </resources>
