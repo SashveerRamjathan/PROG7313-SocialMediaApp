@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PROG7313-SocialMediaApp</string>
+
+    // Login
+    <string name="login_title">Welcome Back!</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="register_text">Don\'t have an account? Register</string>
 </resources>
