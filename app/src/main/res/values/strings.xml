@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PROG7313-SocialMediaApp</string>
+    <string name="app_name">Banter Box</string>
 
     <!--Login -->
     <string name="login_title">Welcome Back!</string>
