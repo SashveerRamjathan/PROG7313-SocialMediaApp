@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.fakebook.SocialMediaApp.databinding.ActivityUserEmailPasswordBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class UserEmailPasswordActivity : AppCompatActivity() {
 
@@ -24,6 +25,9 @@ class UserEmailPasswordActivity : AppCompatActivity() {
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnNext: Button
     private lateinit var btnLogin: Button
+
+    // Firebase Authentication
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,9 @@ class UserEmailPasswordActivity : AppCompatActivity() {
         btnNext = binding.btnNext
         btnLogin = binding.btnLogin
 
+        // Initialize Firebase Authentication
+        auth = FirebaseAuth.getInstance()
+
         btnNext.setOnClickListener {
 
             // get values from fields
@@ -49,6 +56,31 @@ class UserEmailPasswordActivity : AppCompatActivity() {
             //check if all fields are filled
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty())
             {
+                // check if email is valid (contains "@" and 1 "." after "@")
+                if (!email.contains("@") || !email.contains("."))
+                {
+                    etEmail.error = "Email is invalid"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+
+                // check if ("." after "@" is not the last character)
+                if (email.lastIndexOf(".") < email.lastIndexOf("@"))
+                {
+                    etEmail.error = "Email is invalid"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+
+                // check if password is valid (at least 6 characters)
+                if (password.length < 6)
+                {
+                    etPassword.error = "Password must be at least 6 characters"
+                    etPassword.requestFocus()
+                    return@setOnClickListener
+                }
+
+
                 // check if password and confirm password match
                 if (password == confirmPassword)
                 {
@@ -61,8 +93,13 @@ class UserEmailPasswordActivity : AppCompatActivity() {
                 }
                 else
                 {
-                    // show error message
-                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    // show error message in text fields
+                    etPassword.error = "Passwords do not match"
+                    etPassword.requestFocus()
+                    etConfirmPassword.error = "Passwords do not match"
+                    etConfirmPassword.requestFocus()
+
+                    return@setOnClickListener
                 }
             }
             else

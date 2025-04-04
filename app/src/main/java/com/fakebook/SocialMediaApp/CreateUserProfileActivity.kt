@@ -24,6 +24,7 @@ import java.io.InputStream
 import android.util.Base64
 import com.fakebook.SocialMediaApp.DataModels.User
 import androidx.core.graphics.scale
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 
 class CreateUserProfileActivity : AppCompatActivity() {
 
@@ -197,6 +198,14 @@ class CreateUserProfileActivity : AppCompatActivity() {
                     val user = auth.currentUser
 
                     callback(user)  // Return user via callback
+                }
+                else if (task.exception is FirebaseAuthUserCollisionException)
+                {
+                    // Registration failed due to email already in use
+                    Toast.makeText(this, "Email already in use", Toast.LENGTH_SHORT).show()
+                    Log.e("CreateUserProfileActivity", "Email already in use", task.exception)
+
+                    callback(null)  // Return null if registration fails
                 }
                 else
                 {

@@ -4,25 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main View"
+        android:text="@string/main_view_title"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_margin="5dp"
+        android:layout_marginTop="32dp"
         android:layout_gravity="center"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:id="@+id/btn_logout"
-        android:layout_marginTop="100dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/logout"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary" />
 
 </LinearLayout>
