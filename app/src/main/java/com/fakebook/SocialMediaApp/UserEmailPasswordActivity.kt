@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,7 @@ class UserEmailPasswordActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnNext: Button
-    private lateinit var btnLogin: Button
+    private lateinit var btnLogin: TextView // Initializing login as a Button (even though it is a TextView)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class UserEmailPasswordActivity : AppCompatActivity() {
         etPassword = binding.etPassword
         etConfirmPassword = binding.etConfirmPassword
         btnNext = binding.btnNext
-        btnLogin = binding.btnLogin
+        btnLogin = binding.tvLogin
 
         btnNext.setOnClickListener {
 
