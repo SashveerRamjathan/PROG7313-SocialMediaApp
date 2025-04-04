@@ -80,20 +80,13 @@ class CreateUserProfileActivity : AppCompatActivity() {
         // Initialize View Binding
         binding = ActivityCreateUserProfileBinding.inflate(layoutInflater)
 
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // Initialize view components
-        ivProfilePicture = binding.ivProfilePicture
+        ivProfilePicture = binding.ivProfilePic
         btnAddProfilePicture = binding.btnAddProfilePicture
         etFullName = binding.etFullName
         etUsername = binding.etUsername
         etBio = binding.etBio
-        btnCreateAccount = binding.btnCreateAccount
+        btnCreateAccount = binding.btnCreate
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()

@@ -1,5 +1,6 @@
 package com.fakebook.SocialMediaApp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -22,28 +23,21 @@ class UserEmailPasswordActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnNext: Button
-    private lateinit var btnLogin: TextView // Initializing login as a Button (even though it is a TextView)
+    private lateinit var btnLogin: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityUserEmailPasswordBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         // Initialize view components
         etEmail = binding.etEmail
         etPassword = binding.etPassword
         etConfirmPassword = binding.etConfirmPassword
         btnNext = binding.btnNext
-        btnLogin = binding.tvLogin
+        btnLogin = binding.btnLogin
 
         btnNext.setOnClickListener {
 
@@ -82,8 +76,7 @@ class UserEmailPasswordActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
-
-
     }
 }
