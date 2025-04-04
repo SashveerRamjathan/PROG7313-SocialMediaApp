@@ -14,19 +14,11 @@
         android:layout_height="271dp"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="200dp"
         android:layout_marginRight="20dp"
         android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@mipmap/ic_launcher_banter_box_round"
         tools:ignore="ImageContrastCheck" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:layout_margin="20dp"
-        android:layout_gravity="center"
-        android:textSize="20sp"
-        android:textStyle="italic"/>
 
 </LinearLayout>
