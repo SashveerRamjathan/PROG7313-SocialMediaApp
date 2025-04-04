@@ -1,16 +1,12 @@
 package com.fakebook.SocialMediaApp
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.fakebook.SocialMediaApp.databinding.ActivityUserEmailPasswordBinding
 import com.google.firebase.auth.FirebaseAuth
 
