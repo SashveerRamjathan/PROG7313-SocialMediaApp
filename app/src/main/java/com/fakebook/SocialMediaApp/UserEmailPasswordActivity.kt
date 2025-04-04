@@ -4,13 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.fakebook.SocialMediaApp.databinding.ActivityUserEmailPasswordBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class UserEmailPasswordActivity : AppCompatActivity() {
 
@@ -22,28 +20,27 @@ class UserEmailPasswordActivity : AppCompatActivity() {
     private lateinit var etPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnNext: Button
-    private lateinit var btnLogin: TextView // Initializing login as a Button (even though it is a TextView)
+    private lateinit var btnLogin: Button
+
+    // Firebase Authentication
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityUserEmailPasswordBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         // Initialize view components
         etEmail = binding.etEmail
         etPassword = binding.etPassword
         etConfirmPassword = binding.etConfirmPassword
         btnNext = binding.btnNext
-        btnLogin = binding.tvLogin
+        btnLogin = binding.btnLogin
+
+        // Initialize Firebase Authentication
+        auth = FirebaseAuth.getInstance()
 
         btnNext.setOnClickListener {
 
@@ -55,6 +52,31 @@ class UserEmailPasswordActivity : AppCompatActivity() {
             //check if all fields are filled
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty())
             {
+                // check if email is valid (contains "@" and 1 "." after "@")
+                if (!email.contains("@") || !email.contains("."))
+                {
+                    etEmail.error = "Email is invalid"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+
+                // check if ("." after "@" is not the last character)
+                if (email.lastIndexOf(".") < email.lastIndexOf("@"))
+                {
+                    etEmail.error = "Email is invalid"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+
+                // check if password is valid (at least 6 characters)
+                if (password.length < 6)
+                {
+                    etPassword.error = "Password must be at least 6 characters"
+                    etPassword.requestFocus()
+                    return@setOnClickListener
+                }
+
+
                 // check if password and confirm password match
                 if (password == confirmPassword)
                 {
@@ -67,8 +89,13 @@ class UserEmailPasswordActivity : AppCompatActivity() {
                 }
                 else
                 {
-                    // show error message
-                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    // show error message in text fields
+                    etPassword.error = "Passwords do not match"
+                    etPassword.requestFocus()
+                    etConfirmPassword.error = "Passwords do not match"
+                    etConfirmPassword.requestFocus()
+
+                    return@setOnClickListener
                 }
             }
             else
@@ -82,8 +109,7 @@ class UserEmailPasswordActivity : AppCompatActivity() {
         btnLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
-
-
     }
 }

@@ -49,7 +49,7 @@
             tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +57,8 @@
         android:text="@string/login_button"
         tools:ignore="VisualLintButtonSize" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,5 +66,6 @@
         android:gravity="center"
         android:text="@string/register_text"
         android:textColor="?attr/colorPrimary"
+        android:textAllCaps="false"
         tools:ignore="TouchTargetSizeCheck" />
 </LinearLayout>

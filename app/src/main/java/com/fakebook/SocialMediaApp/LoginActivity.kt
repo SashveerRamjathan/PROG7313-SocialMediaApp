@@ -3,14 +3,11 @@ package com.fakebook.SocialMediaApp
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.fakebook.SocialMediaApp.databinding.ActivityLoginBinding
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -21,22 +18,16 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     // View components
-    private lateinit var etEmail: TextInputEditText
-    private lateinit var etPassword: TextInputEditText
+    private lateinit var etEmail: EditText
+    private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
-    private lateinit var btnRegister: TextView // Initializing register as a Button (even though it is a TextView)
+    private lateinit var btnRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // Removed functionality as it messes with the padding
-        // ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-        //     val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        //     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-        //     insets
-        // }
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
