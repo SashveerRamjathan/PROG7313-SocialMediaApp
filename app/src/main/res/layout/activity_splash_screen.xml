@@ -6,17 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashScreenActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="UseCompoundDrawables">
 
     <ImageView
         android:layout_width="346dp"
         android:layout_height="271dp"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="20dp"
+        android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher_round"
-        android:contentDescription="@string/app_name"/>
+        tools:ignore="ImageContrastCheck" />
 
     <TextView
         android:layout_width="wrap_content"
