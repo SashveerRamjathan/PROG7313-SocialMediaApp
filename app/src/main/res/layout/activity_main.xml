@@ -42,6 +42,7 @@
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:scrollIndicators="left"
-        app:menu="@menu/main_navigation_menu" />
+        app:menu="@menu/main_navigation_menu"
+        tools:ignore="VisualLintBottomNav" />
 
 </RelativeLayout>

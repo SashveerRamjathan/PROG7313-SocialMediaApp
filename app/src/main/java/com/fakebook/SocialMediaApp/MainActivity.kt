@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         bnvNavbar.setOnItemSelectedListener {
             when (it.itemId)
             {
-                R.id.miHome -> false
+                R.id.miHome -> true
 
                 R.id.miPost -> {
 
