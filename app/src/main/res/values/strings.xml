@@ -31,4 +31,11 @@
     <string name="menu_item_home">Home</string>
     <string name="menu_item_post">Post</string>
     <string name="menu_item_profile">Profile</string>
+
+    <!-- Create Post -->
+    <string name="create_post_title">Create New Post</string>
+    <string name="post_image_desc">Post picture</string>
+    <string name="choose_image">Choose Image</string>
+    <string name="caption_hint">Caption</string>
+    <string name="create_post">Create Post</string>
 </resources>

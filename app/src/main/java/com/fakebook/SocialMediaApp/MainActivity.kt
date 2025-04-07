@@ -73,8 +73,9 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.miPost -> {
 
-                    // display coming soon toast
-                    Toast.makeText(this, "Post Feature - Coming Soon", Toast.LENGTH_SHORT).show()
+                    // navigate to create post activity
+                    startActivity(Intent(this, CreatePostActivity::class.java))
+                    finish()
                     true
                 }
 
