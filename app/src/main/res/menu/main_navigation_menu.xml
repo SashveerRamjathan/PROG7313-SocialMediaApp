@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/miHome"
+        android:title="@string/menu_item_home"
+        android:icon="@drawable/ic_house"/>
+
+    <item
+        android:id="@+id/miPost"
+        android:title="@string/menu_item_post"
+        android:icon="@drawable/ic_post"/>
+
+    <item
+        android:id="@+id/miProfile"
+        android:title="@string/menu_item_profile"
+        android:icon="@drawable/ic_profile"/>
+</menu>

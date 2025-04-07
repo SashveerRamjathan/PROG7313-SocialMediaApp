@@ -26,4 +26,9 @@
     <!-- Main - Home -->
     <string name="logout">Logout</string>
     <string name="main_view_title">Main View</string>
+
+    <!-- Navigation Menu -->
+    <string name="menu_item_home">Home</string>
+    <string name="menu_item_post">Post</string>
+    <string name="menu_item_profile">Profile</string>
 </resources>
