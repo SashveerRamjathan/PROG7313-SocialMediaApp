@@ -8,14 +8,17 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.fakebook.SocialMediaApp.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
+    // View Binding
     private lateinit var binding: ActivityMainBinding
 
     // View components
     private lateinit var btnLogout: Button
+    private lateinit var bnvNavbar: BottomNavigationView
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -30,9 +33,13 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize view components
         btnLogout = binding.btnLogout
+        bnvNavbar = binding.bnvNavbar
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
+
+        // Highlight the Home menu item
+        bnvNavbar.menu.findItem(R.id.miHome).isChecked = true
 
         btnLogout.setOnClickListener {
 
@@ -55,6 +62,30 @@ class MainActivity : AppCompatActivity() {
 
                 // log the error
                 Log.d("MainActivity", "Error signing out: ${auth.currentUser?.email}")
+            }
+        }
+
+        // Set up Bottom Navigation View onClickListener
+        bnvNavbar.setOnItemSelectedListener {
+            when (it.itemId)
+            {
+                R.id.miHome -> false
+
+                R.id.miPost -> {
+
+                    // display coming soon toast
+                    Toast.makeText(this, "Post Feature - Coming Soon", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                R.id.miProfile -> {
+
+                    // display coming soon toast
+                    Toast.makeText(this, "Profile Feature - Coming Soon", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                else -> false
             }
         }
 
