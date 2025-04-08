@@ -18,9 +18,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.fakebook.SocialMediaApp.DataModels.Post
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.ByteArrayOutputStream
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -42,6 +46,12 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+
+    // Firebase Authentication
+    private lateinit var auth: FirebaseAuth
+
+    // Firestore
+    private lateinit var firestore: FirebaseFirestore
 
     // Image for the selected post picture
     private var image: ByteArray = ByteArray(0)
@@ -77,6 +87,12 @@ class CreatePostActivity : AppCompatActivity()
         btnCreatePost = binding.btnCreatePost
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
+
+        // Initialize Firebase Authentication
+        auth = FirebaseAuth.getInstance()
+
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance()
 
         // highlight the post menu item
         bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
@@ -115,13 +131,78 @@ class CreatePostActivity : AppCompatActivity()
             // get caption
             val caption = etCaption.text.toString()
 
-            if (image.isNotEmpty() && caption.isNotEmpty())
+            if (image.isNotEmpty() && caption.isNotBlank())
             {
-                lifecycleScope.launch {
+                // Generate Post ID
+                postID = generatePostID()
 
-                    val link = uploadImageToStorage()
-                    Toast.makeText(this@CreatePostActivity, link, Toast.LENGTH_SHORT).show()
+                // log the post ID
+                Log.d("CreatePostActivity", "Creating post with ID: $postID")
+
+                // check if post ID is not empty
+                if (postID.isNotBlank())
+                {
+                    // upload image to storage
+                    lifecycleScope.launch {
+                        val imageUrl = uploadImageToStorage()
+
+                        // check if link is not empty
+                        if (imageUrl.isNotBlank())
+                        {
+                            // get current user
+                            val user = auth.currentUser
+
+                            // check if user is not null
+                            if (user != null)
+                            {
+                                // get user ID
+                                val userId = user.uid
+
+                                // create a post object
+                                val post = Post(
+                                    postId = postID,
+                                    userId = userId,
+                                    imageUrl = imageUrl,
+                                    caption = caption,
+                                    timestamp = Timestamp.now()
+
+                                )
+
+                                // add post to firestore
+                                firestore.collection("posts").document(postID).set(post)
+
+                                    .addOnSuccessListener {
+
+                                        // display toast
+                                        Toast.makeText(this@CreatePostActivity, "Post Created Successfully", Toast.LENGTH_SHORT).show()
+
+                                        // navigate to main activity
+                                        startActivity(Intent(this@CreatePostActivity, MainActivity::class.java))
+                                        finish()
+                                    }
+
+                                    .addOnFailureListener { e ->
+
+                                        // log the error
+                                        Log.e("CreatePostActivity", "Error adding post to Firestore", e)
+
+                                        // display toast
+                                        Toast.makeText(this@CreatePostActivity, "Error Saving Post", Toast.LENGTH_SHORT).show()
+
+                                        // reset post ID
+                                        postID = ""
+                                    }
+                            }
+                        }
+                    }
                 }
+                else
+                {
+                    Toast.makeText(this, "Error generating post ID", Toast.LENGTH_SHORT).show()
+                    Log.e("CreatePostActivity", "Post ID is empty")
+                    return@setOnClickListener
+                }
+
             }
             else
             {
@@ -166,22 +247,28 @@ class CreatePostActivity : AppCompatActivity()
     {
         try
         {
-            // Initialize the storage bucket
-            val bucket = supabase.storage.from("banterbox-posts")
-
-            // Generate Post ID
-            postID = generatePostID()
-
-            // Upload the image to the specified file path within the bucket
-            bucket.upload(postID, image)
+            // check if post ID is not empty and image is not empty
+            if (postID.isNotEmpty() && image.isNotEmpty())
             {
-                upsert = false // Set to true to overwrite if the file already exists
-                contentType = ContentType.Image.JPEG // Set the content type to JPEG
+                // Initialize the storage bucket
+                val bucket = supabase.storage.from("banterbox-posts")
+
+                // Upload the image to the specified file path within the bucket
+                bucket.upload(postID, image)
+                {
+                    upsert = false // Set to true to overwrite if the file already exists
+                    contentType = ContentType.Image.JPEG // Set the content type to JPEG
+                }
+
+                // Retrieve and return the public URL of the uploaded image
+                return bucket.publicUrl(postID)
             }
-
-            // Retrieve and return the public URL of the uploaded image
-            return bucket.publicUrl(postID)
-
+            else
+            {
+                // log the error
+                Log.e("CreatePostActivity", "Post ID or image is empty")
+                return ""
+            }
         } catch (e: Exception)
         {
             // log the error
