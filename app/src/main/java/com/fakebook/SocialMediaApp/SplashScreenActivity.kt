@@ -13,16 +13,14 @@ import com.fakebook.SocialMediaApp.databinding.ActivitySplashScreenBinding
 import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("CustomSplashScreen")
-class SplashScreenActivity : AppCompatActivity()
-{
+class SplashScreenActivity : AppCompatActivity() {
     // View binding
     private lateinit var binding: ActivitySplashScreenBinding
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -46,16 +44,13 @@ class SplashScreenActivity : AppCompatActivity()
                 // Check if user is already logged in
                 val currentUser = auth.currentUser
 
-                if (currentUser != null)
-                {
+                if (currentUser != null) {
                     // User is already logged in, navigate to MainActivity
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
 
-                }
-                else
-                {
+                } else {
                     // User is not logged in, navigate to LoginActivity
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
