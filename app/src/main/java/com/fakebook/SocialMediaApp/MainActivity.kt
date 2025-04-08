@@ -46,17 +46,14 @@ class MainActivity : AppCompatActivity() {
             auth.signOut()
 
             // check if user is signed out
-            if (auth.currentUser == null)
-            {
+            if (auth.currentUser == null) {
                 // display message
                 Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
 
                 // redirect to login activity
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
-            }
-            else
-            {
+            } else {
                 // display error message
                 Toast.makeText(this, "Error signing out", Toast.LENGTH_SHORT).show()
 
@@ -67,8 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         // Set up Bottom Navigation View onClickListener
         bnvNavbar.setOnItemSelectedListener {
-            when (it.itemId)
-            {
+            when (it.itemId) {
                 R.id.miHome -> true
 
                 R.id.miPost -> {

@@ -50,27 +50,23 @@ class UserEmailPasswordActivity : AppCompatActivity() {
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
             //check if all fields are filled
-            if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty())
-            {
+            if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 // check if email is valid (contains "@" and 1 "." after "@")
-                if (!email.contains("@") || !email.contains("."))
-                {
+                if (!email.contains("@") || !email.contains(".")) {
                     etEmail.error = "Email is invalid"
                     etEmail.requestFocus()
                     return@setOnClickListener
                 }
 
                 // check if ("." after "@" is not the last character)
-                if (email.lastIndexOf(".") < email.lastIndexOf("@"))
-                {
+                if (email.lastIndexOf(".") < email.lastIndexOf("@")) {
                     etEmail.error = "Email is invalid"
                     etEmail.requestFocus()
                     return@setOnClickListener
                 }
 
                 // check if password is valid (at least 6 characters)
-                if (password.length < 6)
-                {
+                if (password.length < 6) {
                     etPassword.error = "Password must be at least 6 characters"
                     etPassword.requestFocus()
                     return@setOnClickListener
@@ -78,17 +74,14 @@ class UserEmailPasswordActivity : AppCompatActivity() {
 
 
                 // check if password and confirm password match
-                if (password == confirmPassword)
-                {
+                if (password == confirmPassword) {
 
                     // navigate to next activity to create user profile
                     val intent = Intent(this, CreateUserProfileActivity::class.java)
                     intent.putExtra("email", email)
                     intent.putExtra("password", password)
                     startActivity(intent)
-                }
-                else
-                {
+                } else {
                     // show error message in text fields
                     etPassword.error = "Passwords do not match"
                     etPassword.requestFocus()
@@ -97,9 +90,7 @@ class UserEmailPasswordActivity : AppCompatActivity() {
 
                     return@setOnClickListener
                 }
-            }
-            else
-            {
+            } else {
                 // show error message
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             }

@@ -1,20 +1,28 @@
 package com.fakebook.SocialMediaApp
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.ByteArrayOutputStream
 
-class CreatePostActivity : AppCompatActivity()
-{
+class CreatePostActivity : AppCompatActivity() {
     // view binding
     private lateinit var binding: ActivityCreatePostBinding
 
@@ -24,9 +32,9 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+    private var image: ByteArray = ByteArray(0)
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -51,15 +59,22 @@ class CreatePostActivity : AppCompatActivity()
                 .setMessage("Choose image from")
                 .setPositiveButtonIcon(ContextCompat.getDrawable(this, R.drawable.ic_camera))
                 .setPositiveButton("Camera") { _, _ ->
-
-                    Toast.makeText(this, "Camera", Toast.LENGTH_SHORT).show()
-                    // launch camera
+                    // Request camera permission
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.CAMERA
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        // Permission already granted—launch camera.
+                        pickImageFromCamera()
+                    } else {
+                        // Request the CAMERA permission at runtime.
+                        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
                 }
                 .setNegativeButtonIcon(ContextCompat.getDrawable(this, R.drawable.ic_gallery))
                 .setNegativeButton("Gallery") { _, _ ->
-
-                    Toast.makeText(this, "Gallery", Toast.LENGTH_SHORT).show()
-                    // launch gallery
+                    pickImageFromGallery()
                 }
                 .show()
         }
@@ -73,8 +88,7 @@ class CreatePostActivity : AppCompatActivity()
 
         // Set up Bottom Navigation View onClickListener
         bnvNavbar.setOnItemSelectedListener {
-            when (it.itemId)
-            {
+            when (it.itemId) {
                 R.id.miHome -> {
 
                     // navigate to main activity
@@ -96,4 +110,99 @@ class CreatePostActivity : AppCompatActivity()
             }
         }
     }
+
+    // region Image Picker Methods
+    // Function to open the camera and let the user take a photo
+    private fun pickImageFromCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        imageCaptureLauncher.launch(cameraIntent)  // Opens the camera to take an image
+    }
+
+    // Function to open the gallery and let the user pick an image
+    private fun pickImageFromGallery() {
+        pickImageLauncher.launch("image/*")  // Opens the gallery to pick an image
+    }
+    // endregion
+
+    // region Image Activity Launchers
+    // Register a launcher for requesting CAMERA permission.
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // The permission is granted, you can proceed to launch the camera.
+                pickImageFromCamera()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Camera permission is required to take a photo.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+    // Activity result launcher for capturing an image from the camera
+    private val imageCaptureLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val photo = result.data?.extras?.get("data") as? Bitmap
+                photo?.let {
+                    ivPostPic.setImageBitmap(it) // Display the selected image
+
+                    // Convert the image bitmap to a ByteArray
+                    val byteArray = bitmapToByteArray(it)
+                    Log.d("Camera", "Byte array size: ${byteArray.size}")
+
+                    if (byteArray.isNotEmpty()) {
+                        image = byteArray // Update the image variable
+                    } else {
+                        Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show()
+                        Log.e("CreateUserProfileActivity", "Image conversion failed")
+                    }
+                }
+            }
+        }
+
+    // Activity result launcher for selecting an image from the gallery
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            // If the user selects an image, update the ImageView
+            uri?.let {
+                ivPostPic.setImageURI(it)  // Display the selected image
+
+                // Convert the image URI to a Base64 string
+                val convertedImage = uriToByteArray(it)
+
+                if (convertedImage?.isNotEmpty() == true) {
+                    image = convertedImage // Update the image variable
+                } else {
+                    Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show()
+                    Log.e("CreateUserProfileActivity", "Image conversion failed")
+                }
+            }
+        }
+    // endregion
+
+    // region Image Converters
+    // Function to convert image URI to ByteArray
+    private fun uriToByteArray(uri: Uri): ByteArray? {
+        return try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                ByteArrayOutputStream().use { outputStream ->
+                    // Copy the entire input stream data into the output stream
+                    inputStream.copyTo(outputStream)
+                    outputStream.toByteArray()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("CreateUserProfileActivity", "Error converting image URI to ByteArray", e)
+            ByteArray(0) // Return an empty byte array on error
+        }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        return stream.toByteArray()
+    }
+    // endregion
 }
