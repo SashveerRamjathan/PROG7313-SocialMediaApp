@@ -17,10 +17,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.ByteArrayOutputStream
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.launch
 
 class CreatePostActivity : AppCompatActivity() {
     // view binding
@@ -33,6 +39,16 @@ class CreatePostActivity : AppCompatActivity() {
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
     private var image: ByteArray = ByteArray(0)
+
+    // Supabase client
+    private var postID: String = ""
+    private val supabase = createSupabaseClient(
+        supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co",
+        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
+    ) {
+        install(Postgrest)
+        install(Storage)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,18 +69,13 @@ class CreatePostActivity : AppCompatActivity() {
         bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
 
         btnAddPostPicture.setOnClickListener {
-
             MaterialAlertDialogBuilder(this)
                 .setTitle("Image Source")
                 .setMessage("Choose image from")
                 .setPositiveButtonIcon(ContextCompat.getDrawable(this, R.drawable.ic_camera))
                 .setPositiveButton("Camera") { _, _ ->
                     // Request camera permission
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.CAMERA
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         // Permission already granted—launch camera.
                         pickImageFromCamera()
                     } else {
@@ -81,9 +92,10 @@ class CreatePostActivity : AppCompatActivity() {
 
 
         btnCreatePost.setOnClickListener {
-
-            // create post
-            Toast.makeText(this, "Create Post", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val link = uploadImageToStorage()
+                Toast.makeText(this@CreatePostActivity, link, Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Set up Bottom Navigation View onClickListener
@@ -110,6 +122,35 @@ class CreatePostActivity : AppCompatActivity() {
             }
         }
     }
+
+    // region Supabase Methods
+    private suspend fun uploadImageToStorage(): String {
+        // Initialize the storage bucket
+        val bucket = supabase.storage.from("banterbox-posts")
+
+        // Generate Post ID
+        postID = generatePostID()
+
+        // Upload the image to the specified file path within the bucket
+        bucket.upload(postID, image) {
+            upsert = false // Set to true to overwrite if the file already exists
+
+            // options = StorageUploadOptions(
+            //     contentType = "image/jpeg" // or "image/png" depending on your image type
+            // )
+        }
+
+        // Retrieve and return the public URL of the uploaded image
+        return bucket.publicUrl(postID)
+    }
+
+    private fun generatePostID(): String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..10)
+            .map { allowedChars.random() }
+            .joinToString("")
+    }
+    // endregion
 
     // region Image Picker Methods
     // Function to open the camera and let the user take a photo
