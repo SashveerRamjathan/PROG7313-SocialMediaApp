@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+
+    val kotlinVersion = "1.9.0"
+    kotlin("plugin.serialization") version kotlinVersion
 }
 
 android {
@@ -51,4 +54,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    val supabaseVersion = "3.1.4"
+    val ktorVersion = "3.1.2"
+    //noinspection UseTomlInstead
+    implementation(platform("io.github.jan-tennert.supabase:bom:$supabaseVersion"))
+    //noinspection UseTomlInstead
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    //noinspection UseTomlInstead
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    //noinspection UseTomlInstead
+    implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
 }
