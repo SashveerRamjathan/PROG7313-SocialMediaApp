@@ -6,5 +6,5 @@ data class User(
     val username: String,
     val fullName: String,
     val bio: String,
-    val base64ProfilePicture: String
+    val profilePictureLink: String
 )
