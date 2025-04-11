@@ -25,7 +25,7 @@
 
     <!-- Main - Home -->
     <string name="logout">Logout</string>
-    <string name="main_view_title">Main View</string>
+    <string name="main_view_title">Community Posts</string>
 
     <!-- Navigation Menu -->
     <string name="menu_item_home">Home</string>
@@ -38,4 +38,7 @@
     <string name="choose_image">Choose Image</string>
     <string name="caption_hint">Caption</string>
     <string name="create_post">Create Post</string>
+    <string name="post_caption_placeholder">Post Caption</string>
+    <string name="timestamp_placeholder">Timestamp</string>
+    <string name="username_placeholder">Username</string>
 </resources>
