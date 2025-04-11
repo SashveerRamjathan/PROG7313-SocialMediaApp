@@ -65,4 +65,6 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$ktorVersion")
     //noinspection UseTomlInstead
     implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
+
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
