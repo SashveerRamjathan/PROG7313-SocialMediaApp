@@ -33,6 +33,7 @@ import io.github.jan.supabase.storage.storage
  // import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class CreatePostActivity : AppCompatActivity()
 {
@@ -158,14 +159,27 @@ class CreatePostActivity : AppCompatActivity()
                                 // get user ID
                                 val userId = user.uid
 
+                                // get the user from firestore
+                                val userDoc = firestore.collection("users").document(userId).get().await()
+
+                                // check the document exists
+                                if (!userDoc.exists())
+                                {
+                                    Toast.makeText(this@CreatePostActivity, "User not found, Error Creating Post", Toast.LENGTH_SHORT).show()
+                                    return@launch
+                                }
+
+                                // get the username
+                                val username = userDoc.getString("username") ?: ""
+
                                 // create a post object
                                 val post = Post(
                                     postId = postID,
                                     userId = userId,
                                     imageUrl = imageUrl,
                                     caption = caption,
-                                    timestamp = Timestamp.now()
-
+                                    timestamp = Timestamp.now(),
+                                    username = username
                                 )
 
                                 // add post to firestore

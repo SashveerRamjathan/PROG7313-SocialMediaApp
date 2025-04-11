@@ -7,5 +7,6 @@ data class Post(
     val userId: String = "",
     val imageUrl: String = "",
     val caption: String = "",
-    val timestamp: Timestamp = Timestamp.now()
+    val timestamp: Timestamp = Timestamp.now(),
+    val username: String = ""
 )

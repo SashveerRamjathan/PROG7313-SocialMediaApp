@@ -18,6 +18,7 @@ class PostAdapter(private var posts: List<Post>) :
         val ivPostImage: ImageView = itemView.findViewById(R.id.ivPostImage)
         val tvCaption: TextView = itemView.findViewById(R.id.tvCaption)
         val tvTimestamp: TextView = itemView.findViewById(R.id.tvTimestamp)
+        val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -40,6 +41,8 @@ class PostAdapter(private var posts: List<Post>) :
         val date = post.timestamp.toDate()
         val sdf = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
         holder.tvTimestamp.text = sdf.format(date)
+
+        holder.tvUsername.text = post.username
     }
 
     override fun getItemCount(): Int = posts.size
