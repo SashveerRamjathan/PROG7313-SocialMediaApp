@@ -343,6 +343,7 @@ class CreateUserProfileActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK)
             {
+                @Suppress("DEPRECATION")
                 val photo = result.data?.extras?.get("data") as? Bitmap
 
                 photo?.let {

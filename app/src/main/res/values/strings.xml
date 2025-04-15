@@ -64,4 +64,15 @@
     <string name="tv_user_profile_title">User Profile</string>
     <string name="settings_button_desc">Settings Button</string>
 
+    <!-- Settings Dialog -->
+    <string name="tv_title_settings">Settings</string>
+    <string name="btn_update_account_information">Update Account Information</string>
+    <string name="btn_sign_out">Sign Out</string>
+
+    <!-- Logout Dialog -->
+    <string name="tv_title">Are you sure you want to sign out?</string>
+    <string name="iv_logout_icon">logout icon</string>
+    <string name="btn_sign_out_text">Sign Out</string>
+    <string name="btn_cancel_text">Cancel</string>
+
 </resources>
