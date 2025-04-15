@@ -69,6 +69,8 @@ class ProfileActivity : AppCompatActivity()
 
             btnUpdateAccount.setOnClickListener {
 
+                // navigate to update account activity
+                startActivity(Intent(this, UpdateAccountActivity::class.java))
             }
 
             btnSignOut.setOnClickListener {
@@ -109,7 +111,11 @@ class ProfileActivity : AppCompatActivity()
 
                 }
 
-                btnCancel.setOnClickListener { logoutDialog.dismiss() }
+                btnCancel.setOnClickListener {
+
+                    dialog.dismiss()
+                    logoutDialog.dismiss()
+                }
 
             }
         }

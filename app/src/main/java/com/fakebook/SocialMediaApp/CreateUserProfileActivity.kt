@@ -58,12 +58,12 @@ class CreateUserProfileActivity : AppCompatActivity() {
     // Current user
     private var currentUser: FirebaseUser? = null
 
-    // region Supabase Credentials
+    // region Supabase Credentials (MOVE TO ON-CREATE)
     private val supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co"
     private val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
     //endregion
 
-    // Supabase client
+    // Supabase client (MOVE TO ON-CREATE)
     private val supabase = createSupabaseClient(
         supabaseUrl = supabaseUrl,
         supabaseKey = supabaseKey
