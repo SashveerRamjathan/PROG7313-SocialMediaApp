@@ -38,24 +38,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/cl_header">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_logout"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/logout"
-            app:iconTint="?attr/colorPrimary"
-            app:strokeColor="?attr/colorPrimary" />
-
-    </LinearLayout>
+    <!--Add Other Layouts here-->
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

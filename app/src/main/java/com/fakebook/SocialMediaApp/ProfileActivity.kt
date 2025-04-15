@@ -1,5 +1,6 @@
 package com.fakebook.SocialMediaApp
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -21,7 +22,6 @@ class ProfileActivity : AppCompatActivity()
     private lateinit var auth: FirebaseAuth
 
     //View Components
-    private lateinit var btnLogout: Button
     private lateinit var bnvNavbar: BottomNavigationView
     private lateinit var btnSettings: ImageButton
 
@@ -39,7 +39,6 @@ class ProfileActivity : AppCompatActivity()
         auth = FirebaseAuth.getInstance()
 
         // Initialize View Components
-        btnLogout = binding.btnLogout
         bnvNavbar = binding.bnvNavbar
         btnSettings = binding.btnSettings
 
@@ -52,24 +51,66 @@ class ProfileActivity : AppCompatActivity()
 
     private fun setUpOnClickListener()
     {
-        btnLogout.setOnClickListener {
+        btnSettings.setOnClickListener {
 
-            auth.signOut()
+            val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
 
-            // check if user is signed out
-            if (auth.currentUser == null) {
-                // display message
-                Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
 
-                // redirect to login activity
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            } else {
-                // display error message
-                Toast.makeText(this, "Error signing out", Toast.LENGTH_SHORT).show()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                // log the error
-                Log.d("MainActivity", "Error signing out: ${auth.currentUser?.email}")
+            dialog.show()
+
+            // access views from dialog
+            val btnUpdateAccount = dialogView.findViewById<Button>(R.id.btnUpdateAccount)
+            val btnSignOut = dialogView.findViewById<Button>(R.id.btnSignOut)
+
+            btnUpdateAccount.setOnClickListener {
+
+            }
+
+            btnSignOut.setOnClickListener {
+
+                val logoutDialogView = layoutInflater.inflate(R.layout.dialog_logout, null)
+
+                val logoutDialog = AlertDialog.Builder(this)
+                    .setView(logoutDialogView)
+                    .create()
+
+                logoutDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                logoutDialog.show()
+
+                // access views from logout dialog
+                val btnLogOut = logoutDialogView.findViewById<Button>(R.id.btnSignOut)
+                val btnCancel = logoutDialogView.findViewById<Button>(R.id.btnCancel)
+
+                btnLogOut.setOnClickListener {
+
+                    auth.signOut()
+
+                    // check if user is signed out
+                    if (auth.currentUser == null) {
+                        // display message
+                        Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
+
+                        // redirect to login activity
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        // display error message
+                        Toast.makeText(this, "Error signing out", Toast.LENGTH_SHORT).show()
+
+                        // log the error
+                        Log.d("MainActivity", "Error signing out: ${auth.currentUser?.email}")
+                    }
+
+                }
+
+                btnCancel.setOnClickListener { logoutDialog.dismiss() }
+
             }
         }
 
