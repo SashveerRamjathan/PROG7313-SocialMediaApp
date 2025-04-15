@@ -46,4 +46,15 @@
     <string name="like_button_description">Like Button</string>
     <string name="post_image_description">User Image Post</string>
     <string name="tv_number_of_likes">Number of likes</string>
+    <string name="desc_comment_button">Comment Button</string>
+    <string name="tv_number_of_comments">Number of Comments</string>
+
+    <!-- Comment Dialog -->
+    <string name="tv_comment_hint">Comment</string>
+    <string name="btn_post_comment_text">Post Comment</string>
+
+    <!-- Comment Item -->
+    <string name="tv_user_name_text">User Name</string>
+    <string name="tv_comment_text">Comment goes here</string>
+
 </resources>
