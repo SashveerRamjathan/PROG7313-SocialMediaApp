@@ -83,6 +83,30 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="5dp"/>
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/desc_comment_button"
+                android:src="@drawable/ic_comment_filled"
+                app:layout_constraintRight_toLeftOf="@id/tvNumComments"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck,RedundantDescriptionCheck"
+                android:id="@+id/btnComment"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNumComments"
+                android:text="@string/tv_number_of_comments"
+                android:textColor="#757575"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="10dp" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
