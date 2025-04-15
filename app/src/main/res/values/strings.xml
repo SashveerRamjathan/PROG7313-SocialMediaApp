@@ -41,4 +41,9 @@
     <string name="post_caption_placeholder">Post Caption</string>
     <string name="timestamp_placeholder">Timestamp</string>
     <string name="username_placeholder">Username</string>
+
+    <!-- Post Item -->
+    <string name="like_button_description">Like Button</string>
+    <string name="post_image_description">User Image Post</string>
+    <string name="tv_number_of_likes">Number of likes</string>
 </resources>
