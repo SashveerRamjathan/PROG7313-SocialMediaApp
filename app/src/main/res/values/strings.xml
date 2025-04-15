@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Banter Box</string>
 
+    <string name="supabase_url">https://tegyzsstiwjrixqifddn.supabase.co</string>
+    <string name="supabase_api_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw</string>
+
     <!--Login -->
     <string name="login_title">Welcome Back!</string>
     <string name="email_hint">Email Address</string>
@@ -46,4 +49,15 @@
     <string name="like_button_description">Like Button</string>
     <string name="post_image_description">User Image Post</string>
     <string name="tv_number_of_likes">Number of likes</string>
+    <string name="desc_comment_button">Comment Button</string>
+    <string name="tv_number_of_comments">Number of Comments</string>
+
+    <!-- Comment Dialog -->
+    <string name="tv_comment_hint">Comment</string>
+    <string name="btn_post_comment_text">Post Comment</string>
+
+    <!-- Comment Item -->
+    <string name="tv_user_name_text">User Name</string>
+    <string name="tv_comment_text">Comment goes here</string>
+
 </resources>

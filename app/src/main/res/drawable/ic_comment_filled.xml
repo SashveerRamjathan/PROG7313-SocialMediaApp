@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+
+  <!-- Filled comment bubble with stalk on the left -->
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M4,10 L4,16 L6.5,14 H20a2,2 0 0 0 2,-2 V6a2,2 0 0 0 -2,-2 H6a2,2 0 0 0 -2,2 V10 Z" />
+
+  <!-- Dot 1 -->
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M9,9a1,1 0 1,0 0.001,-2A1,1 0 0,0 9,9Z" />
+
+  <!-- Dot 2 -->
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M12,9a1,1 0 1,0 0.001,-2A1,1 0 0,0 12,9Z" />
+
+  <!-- Dot 3 -->
+  <path
+      android:fillColor="#FFFFFFFF"
+      android:pathData="M15,9a1,1 0 1,0 0.001,-2A1,1 0 0,0 15,9Z" />
+
+</vector>

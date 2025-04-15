@@ -61,8 +61,8 @@ class CreatePostActivity : AppCompatActivity()
     private var postID: String = ""
 
     // region Supabase Credentials
-    private val supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co"
-    private val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
+    private val supabaseUrl = getString(R.string.supabase_url)
+    private val supabaseKey = getString(R.string.supabase_api_key)
     //endregion
 
     // Supabase client
