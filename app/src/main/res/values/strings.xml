@@ -60,4 +60,8 @@
     <string name="tv_user_name_text">User Name</string>
     <string name="tv_comment_text">Comment goes here</string>
 
+    <!-- Profile -->
+    <string name="tv_user_profile_title">User Profile</string>
+    <string name="settings_button_desc">Settings Button</string>
+
 </resources>
