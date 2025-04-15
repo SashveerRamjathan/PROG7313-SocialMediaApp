@@ -24,18 +24,8 @@
             android:layout_marginTop="32dp"
             android:text="@string/main_view_title"
             android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_logout"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/logout"
-            app:iconTint="?attr/colorPrimary"
-            app:strokeColor="?attr/colorPrimary" />
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPosts"
