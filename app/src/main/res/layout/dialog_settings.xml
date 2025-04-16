@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,25 +25,39 @@
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:id="@+id/btnUpdateAccount"
+            android:id="@+id/btnUpdateProfileInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_gravity="center"
-            android:text="@string/btn_update_account_information"
+            android:text="@string/btn_update_profile_information"
             android:textColor="?attr/colorPrimary"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:id="@+id/btnSignOut"
+            android:id="@+id/btnChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_gravity="center"
+            android:text="@string/btn_change_password"
+            android:textColor="?attr/colorPrimary"
+            android:textAllCaps="false"
+            tools:ignore="VisualLintButtonSize" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSignOut"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
             android:text="@string/btn_sign_out"
-            android:textColor="@color/material_red_500"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="#DD2C00"
+            tools:ignore="VisualLintButtonSize" />
 
     </LinearLayout>
 

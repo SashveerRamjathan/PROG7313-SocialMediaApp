@@ -18,7 +18,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.fakebook.SocialMediaApp.databinding.ActivityUpdateAccountBinding
+import com.fakebook.SocialMediaApp.databinding.ActivityUpdateProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -28,10 +28,10 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import java.io.ByteArrayOutputStream
 
-class UpdateAccountActivity : AppCompatActivity() {
+class UpdateProfileActivity : AppCompatActivity() {
 
     // View Binding
-    private lateinit var binding: ActivityUpdateAccountBinding
+    private lateinit var binding: ActivityUpdateProfileBinding
 
     // View Components
     private lateinit var ivProfilePicture: ImageView
@@ -60,7 +60,7 @@ class UpdateAccountActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         // Initialize View Binding
-        binding = ActivityUpdateAccountBinding.inflate(layoutInflater)
+        binding = ActivityUpdateProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Initialize View Components
@@ -69,7 +69,7 @@ class UpdateAccountActivity : AppCompatActivity() {
         etFullName = binding.etFullName
         etUsername = binding.etUsername
         etBio = binding.etBio
-        btnUpdateAccount = binding.btnUpdate
+        btnUpdateAccount = binding.btnUpdateProfile
         btnBack = binding.btnBack
 
         // Initialize Firebase Authentication

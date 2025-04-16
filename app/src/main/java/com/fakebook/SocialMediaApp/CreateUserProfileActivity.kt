@@ -18,7 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.fakebook.SocialMediaApp.DataModels.User
+import com.fakebook.SocialMediaApp.models.User
 import com.fakebook.SocialMediaApp.databinding.ActivityCreateUserProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth

@@ -21,7 +21,10 @@
         android:theme="@style/Theme.PROG7313SocialMediaApp"
         tools:targetApi="31">
         <activity
-            android:name=".UpdateAccountActivity"
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
