@@ -79,5 +79,6 @@
     <string name="tv_title_update_account">Update Your Profile</string>
     <string name="update_profile_picture">Update Profile Picture</string>
     <string name="update_account">Update Account</string>
+    <string name="back_button_desc">Back Button</string>
 
 </resources>

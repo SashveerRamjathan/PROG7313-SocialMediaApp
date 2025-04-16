@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -39,6 +40,7 @@ class UpdateAccountActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
     private lateinit var etBio: EditText
     private lateinit var btnUpdateAccount: Button
+    private lateinit var btnBack: ImageButton
 
     // Firebase Auth
     private lateinit var auth: FirebaseAuth
@@ -52,21 +54,6 @@ class UpdateAccountActivity : AppCompatActivity() {
     // Image for the selected profile picture
     private var image: ByteArray = ByteArray(0)
 
-    // ****move supabase into on create****
-
-    // region Supabase Credentials
-    private val supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co"
-    private val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
-    //endregion
-
-    // Supabase client
-    private val supabase = createSupabaseClient(
-        supabaseUrl = supabaseUrl,
-        supabaseKey = supabaseKey
-    ) {
-        install(Postgrest)
-        install(Storage)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,12 +70,27 @@ class UpdateAccountActivity : AppCompatActivity() {
         etUsername = binding.etUsername
         etBio = binding.etBio
         btnUpdateAccount = binding.btnUpdate
+        btnBack = binding.btnBack
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
         // Initialize Firebase FireStore
         firestore = FirebaseFirestore.getInstance()
+
+        // region Supabase Credentials
+        val supabaseUrl = getString(R.string.supabase_url)
+        val supabaseKey = getString(R.string.supabase_api_key)
+        //endregion
+
+        // Supabase client
+        val supabaseClient = createSupabaseClient(
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey
+        ) {
+            install(Postgrest)
+            install(Storage)
+        }
 
         // Set up OnClickListener
         setUpOnClickListener()
@@ -133,6 +135,10 @@ class UpdateAccountActivity : AppCompatActivity() {
 
             // TO DO
             TODO("Update account information")
+        }
+
+        btnBack.setOnClickListener {
+            finish()
         }
     }
 
