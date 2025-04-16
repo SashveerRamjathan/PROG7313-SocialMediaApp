@@ -25,6 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import io.github.jan.supabase.SupabaseClient
 import java.io.ByteArrayOutputStream
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -60,20 +61,6 @@ class CreatePostActivity : AppCompatActivity()
     // Post ID
     private var postID: String = ""
 
-    // region Supabase Credentials
-    private val supabaseUrl = getString(R.string.supabase_url)
-    private val supabaseKey = getString(R.string.supabase_api_key)
-    //endregion
-
-    // Supabase client
-    private val supabase = createSupabaseClient(
-        supabaseUrl = supabaseUrl,
-        supabaseKey = supabaseKey
-    ) {
-        install(Postgrest)
-        install(Storage)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -98,6 +85,26 @@ class CreatePostActivity : AppCompatActivity()
         // highlight the post menu item
         bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
 
+        // region Supabase Credentials
+        val supabaseUrl = getString(R.string.supabase_url)
+        val supabaseKey = getString(R.string.supabase_api_key)
+        //endregion
+
+        // Supabase client
+        val supabaseClient = createSupabaseClient(
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey
+        ) {
+            install(Postgrest)
+            install(Storage)
+        }
+
+        // Set up OnClickListener
+        setUpOnClickListener(supabaseClient)
+    }
+
+    private fun setUpOnClickListener(supabase: SupabaseClient)
+    {
         btnAddPostPicture.setOnClickListener {
 
             MaterialAlertDialogBuilder(this)
@@ -126,7 +133,6 @@ class CreatePostActivity : AppCompatActivity()
                 .show()
         }
 
-
         btnCreatePost.setOnClickListener {
 
             // get caption
@@ -145,7 +151,7 @@ class CreatePostActivity : AppCompatActivity()
                 {
                     // upload image to storage
                     lifecycleScope.launch {
-                        val imageUrl = uploadImageToStorage()
+                        val imageUrl = uploadImageToStorage(supabase)
 
                         // check if link is not empty
                         if (imageUrl.isNotBlank())
@@ -243,8 +249,9 @@ class CreatePostActivity : AppCompatActivity()
 
                 R.id.miProfile -> {
 
-                    // display coming soon toast
-                    Toast.makeText(this, "Profile Feature - Coming Soon", Toast.LENGTH_SHORT).show()
+                    // navigate to profile activity
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    finish()
                     true
                 }
 
@@ -252,12 +259,13 @@ class CreatePostActivity : AppCompatActivity()
             }
         }
         // endregion
+
     }
 
     // region Supabase Methods
 
     // Upload image to Supabase Storage and return the public URL
-    private suspend fun uploadImageToStorage(): String
+    private suspend fun uploadImageToStorage(supabase: SupabaseClient): String
     {
         try
         {
@@ -342,6 +350,7 @@ class CreatePostActivity : AppCompatActivity()
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK)
             {
+                @Suppress("DEPRECATION")
                 val photo = result.data?.extras?.get("data") as? Bitmap
 
                 photo?.let {

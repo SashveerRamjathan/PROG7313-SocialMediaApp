@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     // View components
-    private lateinit var btnLogout: Button
     private lateinit var bnvNavbar: BottomNavigationView
     private lateinit var rvPosts: RecyclerView
     private lateinit var postAdapter: PostAdapter
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Initialize View Components
-        btnLogout = binding.btnLogout
         bnvNavbar = binding.bnvNavbar
         rvPosts = binding.rvPosts
 
@@ -110,26 +108,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpOnClickListener() {
-        btnLogout.setOnClickListener {
-
-            auth.signOut()
-
-            // check if user is signed out
-            if (auth.currentUser == null) {
-                // display message
-                Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
-
-                // redirect to login activity
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            } else {
-                // display error message
-                Toast.makeText(this, "Error signing out", Toast.LENGTH_SHORT).show()
-
-                // log the error
-                Log.d("MainActivity", "Error signing out: ${auth.currentUser?.email}")
-            }
-        }
 
         // Set up Bottom Navigation View onClickListener
         bnvNavbar.setOnItemSelectedListener {
@@ -146,8 +124,9 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.miProfile -> {
 
-                    // display coming soon toast
-                    Toast.makeText(this, "Profile Feature - Coming Soon", Toast.LENGTH_SHORT).show()
+                    // navigate to profile activity
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    finish()
                     true
                 }
 

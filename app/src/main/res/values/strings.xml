@@ -60,4 +60,24 @@
     <string name="tv_user_name_text">User Name</string>
     <string name="tv_comment_text">Comment goes here</string>
 
+    <!-- Profile -->
+    <string name="tv_user_profile_title">User Profile</string>
+    <string name="settings_button_desc">Settings Button</string>
+
+    <!-- Settings Dialog -->
+    <string name="tv_title_settings">Settings</string>
+    <string name="btn_update_account_information">Update Account Information</string>
+    <string name="btn_sign_out">Sign Out</string>
+
+    <!-- Logout Dialog -->
+    <string name="tv_title">Are you sure you want to sign out?</string>
+    <string name="iv_logout_icon">logout icon</string>
+    <string name="btn_sign_out_text">Sign Out</string>
+    <string name="btn_cancel_text">Cancel</string>
+
+    <!-- Update Account -->
+    <string name="tv_title_update_account">Update Your Profile</string>
+    <string name="update_profile_picture">Update Profile Picture</string>
+    <string name="update_account">Update Account</string>
+
 </resources>
