@@ -64,13 +64,20 @@ class ProfileActivity : AppCompatActivity()
             dialog.show()
 
             // access views from dialog
-            val btnUpdateAccount = dialogView.findViewById<Button>(R.id.btnUpdateAccount)
+            val btnChangePassword = dialogView.findViewById<Button>(R.id.btnChangePassword)
+            val btnUpdateProfileInfo = dialogView.findViewById<Button>(R.id.btnUpdateProfileInfo)
             val btnSignOut = dialogView.findViewById<Button>(R.id.btnSignOut)
 
-            btnUpdateAccount.setOnClickListener {
+            btnUpdateProfileInfo.setOnClickListener {
 
                 // navigate to update account activity
-                startActivity(Intent(this, UpdateAccountActivity::class.java))
+                startActivity(Intent(this, UpdateProfileActivity::class.java))
+            }
+
+            btnChangePassword.setOnClickListener {
+
+                // navigate to update account activity
+                startActivity(Intent(this, ChangePasswordActivity::class.java))
             }
 
             btnSignOut.setOnClickListener {

@@ -11,26 +11,34 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.fakebook.SocialMediaApp.databinding.ActivityUpdateAccountBinding
+import androidx.lifecycle.lifecycleScope
+import com.fakebook.SocialMediaApp.databinding.ActivityUpdateProfileBinding
+import com.fakebook.SocialMediaApp.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
+import io.ktor.http.ContentType
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-class UpdateAccountActivity : AppCompatActivity() {
+class UpdateProfileActivity : AppCompatActivity() {
 
     // View Binding
-    private lateinit var binding: ActivityUpdateAccountBinding
+    private lateinit var binding: ActivityUpdateProfileBinding
 
     // View Components
     private lateinit var ivProfilePicture: ImageView
@@ -39,6 +47,7 @@ class UpdateAccountActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
     private lateinit var etBio: EditText
     private lateinit var btnUpdateAccount: Button
+    private lateinit var btnBack: ImageButton
 
     // Firebase Auth
     private lateinit var auth: FirebaseAuth
@@ -52,28 +61,16 @@ class UpdateAccountActivity : AppCompatActivity() {
     // Image for the selected profile picture
     private var image: ByteArray = ByteArray(0)
 
-    // ****move supabase into on create****
+    // current user profile
+    private lateinit var currentUserProfile: User
 
-    // region Supabase Credentials
-    private val supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co"
-    private val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
-    //endregion
-
-    // Supabase client
-    private val supabase = createSupabaseClient(
-        supabaseUrl = supabaseUrl,
-        supabaseKey = supabaseKey
-    ) {
-        install(Postgrest)
-        install(Storage)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // Initialize View Binding
-        binding = ActivityUpdateAccountBinding.inflate(layoutInflater)
+        binding = ActivityUpdateProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Initialize View Components
@@ -82,7 +79,8 @@ class UpdateAccountActivity : AppCompatActivity() {
         etFullName = binding.etFullName
         etUsername = binding.etUsername
         etBio = binding.etBio
-        btnUpdateAccount = binding.btnUpdate
+        btnUpdateAccount = binding.btnUpdateProfile
+        btnBack = binding.btnBack
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
@@ -90,13 +88,57 @@ class UpdateAccountActivity : AppCompatActivity() {
         // Initialize Firebase FireStore
         firestore = FirebaseFirestore.getInstance()
 
-        // Set up OnClickListener
-        setUpOnClickListener()
+        // region Supabase Credentials
+        val supabaseUrl = getString(R.string.supabase_url)
+        val supabaseKey = getString(R.string.supabase_api_key)
+        //endregion
 
+        // Supabase client
+        val supabaseClient = createSupabaseClient(
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey
+        ) {
+            install(Postgrest)
+            install(Storage)
+        }
+
+        // Get the current user
+        currentUser = auth.currentUser
+
+        // check if user is logged in
+        if (currentUser == null)
+        {
+            // redirect to login
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        // current user data
+        getUserProfile(currentUser!!.uid) { user ->
+
+            if (user != null)
+            {
+                currentUserProfile = user
+
+                // Update UI with user data
+                etFullName.setText(currentUserProfile.fullName)
+                etUsername.setText(currentUserProfile.username)
+                etBio.setText(currentUserProfile.bio)
+
+                Picasso.get()
+                    .load(currentUserProfile.profilePictureLink)
+                    .placeholder(R.drawable.ic_default_image)
+                    .into(ivProfilePicture)
+            }
+        }
+
+        // Set up OnClickListener
+        setUpOnClickListener(supabaseClient)
 
     }
 
-    private fun setUpOnClickListener()
+    private fun setUpOnClickListener(supabaseClient: SupabaseClient)
     {
         btnUpdateProfilePicture.setOnClickListener {
 
@@ -128,11 +170,144 @@ class UpdateAccountActivity : AppCompatActivity() {
 
         btnUpdateAccount.setOnClickListener {
 
-            // Toast to simulate update
-            Toast.makeText(this, "Account updated successfully", Toast.LENGTH_SHORT).show()
+            // get the values from the fields
+            val fullName = etFullName.text.toString().trim()
+            val username = etUsername.text.toString().trim()
+            val bio = etBio.text.toString().trim()
+            val userId = currentUser!!.uid
 
-            // TO DO
-            TODO("Update account information")
+            // check if full name is not empty
+            if (fullName.isEmpty())
+            {
+                etFullName.error = "Full name is required"
+                return@setOnClickListener
+            }
+
+            // check if username is not empty
+            if (username.isEmpty())
+            {
+                etUsername.error = "Username is required"
+                return@setOnClickListener
+            }
+
+            // check if bio is not empty
+            if (bio.isEmpty()) {
+                etBio.error = "Bio is required"
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+
+                val imageUrl = if (image.isEmpty())
+                {
+                    uploadImageToStorage(userId, supabaseClient)
+                }
+                else
+                {
+                    currentUserProfile.profilePictureLink
+                }
+
+
+                // check if link is not blank
+                if (imageUrl.isNotBlank())
+                {
+                    // update the user profile
+                    val updatedProfile = User(
+                        userId = userId,
+                        email = currentUser!!.email ?: "",
+                        username = username,
+                        fullName = fullName,
+                        bio = bio,
+                        profilePictureLink = imageUrl
+                    )
+
+                    updateUserProfile(updatedProfile)
+
+                    // redirect to profile activity
+                    val intent = Intent(this@UpdateProfileActivity, ProfileActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                else
+                {
+                    Toast.makeText(this@UpdateProfileActivity, "Error Updating Profile", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+
+
+        }
+
+        btnBack.setOnClickListener {
+            finish()
+        }
+    }
+
+    // region Firebase Methods
+    // update user doc in firestore
+    private fun updateUserProfile(updatedProfile: User)
+    {
+        firestore.collection("users").document(updatedProfile.userId).set(updatedProfile)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error Updating Profile", Toast.LENGTH_SHORT).show()
+                Log.e("UpdateProfileActivity", "Error updating user profile", e)
+                return@addOnFailureListener
+            }
+    }
+
+    // get user profile from firestore
+    private fun getUserProfile(userId: String, callback: (User?) -> Unit)
+    {
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { documentSnapshot ->
+
+                val user = documentSnapshot.toObject(User::class.java)
+                callback(user)
+            }
+            .addOnFailureListener { exception ->
+
+                Log.e("UpdateProfileActivity", "Error getting user profile", exception)
+                callback(null)
+            }
+    }
+
+    // endregion
+
+    // Upload image to Supabase Storage and return the public URL
+    private suspend fun uploadImageToStorage(userId: String, supabaseClient: SupabaseClient): String
+    {
+        try
+        {
+            // check if post ID is not empty and image is not empty
+            if (userId.isNotEmpty() && image.isNotEmpty())
+            {
+                // Initialize the storage bucket
+                val bucket = supabaseClient.storage.from(getString(R.string.supabase_user_profile_bucket_name))
+
+                // Upload the image to the specified file path within the bucket
+                bucket.upload(userId, image)
+                {
+                    upsert = true // Set to true to overwrite if the file already exists
+                    contentType = ContentType.Image.JPEG // Set the content type to JPEG
+                }
+
+                // Retrieve and return the public URL of the uploaded image
+                return bucket.publicUrl(userId)
+            }
+            else
+            {
+                // return the current link
+                return currentUserProfile.profilePictureLink
+            }
+        } catch (e: Exception)
+        {
+            // log the error
+            Log.e("UpdateProfileActivity", "Error uploading image to Supabase", e)
+            return ""
         }
     }
 
@@ -194,7 +369,7 @@ class UpdateAccountActivity : AppCompatActivity() {
                     else
                     {
                         Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show()
-                        Log.e("CreateUserProfileActivity", "Image conversion failed")
+                        Log.e("UpdateProfileActivity", "Image conversion failed")
                     }
                 }
             }
@@ -218,7 +393,7 @@ class UpdateAccountActivity : AppCompatActivity() {
                 else
                 {
                     Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show()
-                    Log.e("CreateUserProfileActivity", "Image conversion failed")
+                    Log.e("UpdateProfileActivity", "Image conversion failed")
                 }
             }
         }
@@ -243,7 +418,7 @@ class UpdateAccountActivity : AppCompatActivity() {
         }
         catch (e: Exception)
         {
-            Log.e("CreateUserProfileActivity", "Error converting image URI to ByteArray", e)
+            Log.e("UpdateProfileActivity", "Error converting image URI to ByteArray", e)
             ByteArray(0) // Return an empty byte array on error
         }
     }

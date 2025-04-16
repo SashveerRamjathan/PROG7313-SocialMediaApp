@@ -18,7 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.fakebook.SocialMediaApp.DataModels.Post
+import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -273,7 +273,7 @@ class CreatePostActivity : AppCompatActivity()
             if (postID.isNotEmpty() && image.isNotEmpty())
             {
                 // Initialize the storage bucket
-                val bucket = supabase.storage.from("banterbox-posts")
+                val bucket = supabase.storage.from(getString(R.string.supabase_post_bucket_name))
 
                 // Upload the image to the specified file path within the bucket
                 bucket.upload(postID, image)

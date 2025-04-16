@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Banter Box</string>
 
+    <!-- Supabase Credentials -->
     <string name="supabase_url">https://tegyzsstiwjrixqifddn.supabase.co</string>
     <string name="supabase_api_key">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw</string>
+    <string name="supabase_user_profile_bucket_name">banterbox-user-profiles</string>
+    <string name="supabase_post_bucket_name">banterbox-posts</string>
 
     <!--Login -->
     <string name="login_title">Welcome Back!</string>
@@ -66,7 +69,8 @@
 
     <!-- Settings Dialog -->
     <string name="tv_title_settings">Settings</string>
-    <string name="btn_update_account_information">Update Account Information</string>
+    <string name="btn_update_profile_information">Update Profile</string>
+    <string name="btn_change_password">Change Password</string>
     <string name="btn_sign_out">Sign Out</string>
 
     <!-- Logout Dialog -->
@@ -75,9 +79,15 @@
     <string name="btn_sign_out_text">Sign Out</string>
     <string name="btn_cancel_text">Cancel</string>
 
-    <!-- Update Account -->
-    <string name="tv_title_update_account">Update Your Profile</string>
+    <!-- Update Profile -->
+    <string name="tv_title_update_profile">Update Your Profile</string>
     <string name="update_profile_picture">Update Profile Picture</string>
-    <string name="update_account">Update Account</string>
+    <string name="btn_update_profile">Save Changes</string>
+    <string name="back_button_desc">Back Button</string>
 
+    <!-- Change Password  -->
+    <string name="tv_title_update_password">Change Account Password</string>
+    <string name="btn_update_password">Change Password</string>
+    <string name="tv_current_password_hint">Current Password</string>
+    <string name="tv_new_password_hint">New Password</string>
 </resources>
