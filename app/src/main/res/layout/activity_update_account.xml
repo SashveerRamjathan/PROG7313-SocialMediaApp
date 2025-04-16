@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".UpdateAccountActivity"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".CreateUserProfileActivity">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="@string/create_profile_title"
+        android:text="@string/tv_title_update_account"
         android:textColor="@android:color/black"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -32,12 +33,12 @@
 
     <com.google.android.material.button.MaterialButton
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:id="@+id/btn_add_profile_picture"
+        android:id="@+id/btn_update_profile_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="@string/add_profile_picture"
+        android:text="@string/update_profile_picture"
         app:iconTint="?attr/colorPrimary"
         app:strokeColor="?attr/colorPrimary" />
 
@@ -92,11 +93,11 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCreate"
+        android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/create_account"
+        android:text="@string/update_account"
         tools:ignore="TouchTargetSizeCheck,VisualLintButtonSize" />
 
 </LinearLayout>
