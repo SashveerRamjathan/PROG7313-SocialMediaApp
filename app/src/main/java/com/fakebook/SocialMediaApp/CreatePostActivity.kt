@@ -273,7 +273,7 @@ class CreatePostActivity : AppCompatActivity()
             if (postID.isNotEmpty() && image.isNotEmpty())
             {
                 // Initialize the storage bucket
-                val bucket = supabase.storage.from("banterbox-posts")
+                val bucket = supabase.storage.from(getString(R.string.supabase_post_bucket_name))
 
                 // Upload the image to the specified file path within the bucket
                 bucket.upload(postID, image)

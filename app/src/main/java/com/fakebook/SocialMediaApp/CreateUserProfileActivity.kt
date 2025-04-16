@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
@@ -58,19 +59,6 @@ class CreateUserProfileActivity : AppCompatActivity() {
     // Current user
     private var currentUser: FirebaseUser? = null
 
-    // region Supabase Credentials (MOVE TO ON-CREATE)
-    private val supabaseUrl = "https://tegyzsstiwjrixqifddn.supabase.co"
-    private val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZ3l6c3N0aXdqcml4cWlmZGRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMDY2ODksImV4cCI6MjA1OTU4MjY4OX0.YvSCHiD2ZlcedWuOBy37CJWR-BXEHXTYKWSEfOTwRBw"
-    //endregion
-
-    // Supabase client (MOVE TO ON-CREATE)
-    private val supabase = createSupabaseClient(
-        supabaseUrl = supabaseUrl,
-        supabaseKey = supabaseKey
-    ) {
-        install(Postgrest)
-        install(Storage)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +95,26 @@ class CreateUserProfileActivity : AppCompatActivity() {
             return  // Prevent further execution
         }
 
+        // Supabase Credentials
+        val supabaseUrl = getString(R.string.supabase_url)
+        val supabaseKey = getString(R.string.supabase_api_key)
+
+        // Supabase client
+        val supabaseClient = createSupabaseClient(
+            supabaseUrl = supabaseUrl,
+            supabaseKey = supabaseKey
+        ) {
+            install(Postgrest)
+            install(Storage)
+        }
+
+        setOnClickListeners(email, password, supabaseClient)
+
+
+    }
+
+    private fun setOnClickListeners(email: String, password: String, supabaseClient: SupabaseClient)
+    {
         btnAddProfilePicture.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Image Source")
@@ -157,7 +165,7 @@ class CreateUserProfileActivity : AppCompatActivity() {
 
                         lifecycleScope.launch {
 
-                            val imageUrl = uploadImageToStorage(userId)
+                            val imageUrl = uploadImageToStorage(userId, supabaseClient)
 
                             // check if link is not empty
                             if (imageUrl.isNotBlank())
@@ -217,7 +225,6 @@ class CreateUserProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun registerUser(email: String, password: String, callback: (FirebaseUser?) -> Unit) {
@@ -266,7 +273,7 @@ class CreateUserProfileActivity : AppCompatActivity() {
     // region Supabase Methods
 
     // Upload image to Supabase Storage and return the public URL
-    private suspend fun uploadImageToStorage(userId: String): String
+    private suspend fun uploadImageToStorage(userId: String, supabaseClient: SupabaseClient): String
     {
         try
         {
@@ -274,7 +281,7 @@ class CreateUserProfileActivity : AppCompatActivity() {
             if (userId.isNotEmpty() && image.isNotEmpty())
             {
                 // Initialize the storage bucket
-                val bucket = supabase.storage.from("banterbox-user-profiles")
+                val bucket = supabaseClient.storage.from(getString(R.string.supabase_user_profile_bucket_name))
 
                 // Upload the image to the specified file path within the bucket
                 bucket.upload(userId, image)
