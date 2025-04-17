@@ -1,4 +1,4 @@
-package com.fakebook.SocialMediaApp.DataModels
+package com.fakebook.SocialMediaApp.models
 
 import com.google.firebase.Timestamp
 

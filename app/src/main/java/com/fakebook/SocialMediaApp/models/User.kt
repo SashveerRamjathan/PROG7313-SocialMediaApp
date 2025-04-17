@@ -1,4 +1,4 @@
-package com.fakebook.SocialMediaApp.DataModels
+package com.fakebook.SocialMediaApp.models
 
 data class User(
     val userId: String = "",

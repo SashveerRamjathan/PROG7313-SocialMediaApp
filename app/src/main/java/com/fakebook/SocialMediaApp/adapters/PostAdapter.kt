@@ -15,9 +15,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fakebook.SocialMediaApp.DataModels.Comment
-import com.fakebook.SocialMediaApp.DataModels.Post
-import com.fakebook.SocialMediaApp.DataModels.User
+import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.R
+import com.fakebook.SocialMediaApp.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FieldValue
