@@ -12,9 +12,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.adapters.PostAdapter
 import com.fakebook.SocialMediaApp.databinding.ActivityMainBinding
+import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
