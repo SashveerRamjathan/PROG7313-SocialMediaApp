@@ -50,16 +50,7 @@
             android:name=".UserEmailPasswordActivity"
             android:exported="true" />
         <activity
-            android:name=".UpdateAccountActivity"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".CreatePostActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ProfileActivity"
             android:exported="true" />
     </application>
 
