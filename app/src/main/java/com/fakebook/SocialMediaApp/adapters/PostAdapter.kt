@@ -1,7 +1,6 @@
 package com.fakebook.SocialMediaApp.adapters
 
 import android.app.AlertDialog
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +13,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.fakebook.SocialMediaApp.R
+import com.fakebook.SocialMediaApp.helpers.FirestoreUtils
 import com.fakebook.SocialMediaApp.models.Comment
 import com.fakebook.SocialMediaApp.models.Post
-import com.fakebook.SocialMediaApp.models.User
-import com.fakebook.SocialMediaApp.R
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -32,7 +28,7 @@ class PostAdapter(private var posts: List<Post>) :
 
     // Firebase instances (you can also pass these from your Activity if needed)
     private val firestore = FirebaseFirestore.getInstance()
-    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    private val currentUserId = FirestoreUtils.getCurrentUserId() ?: ""
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivPostImage: ImageView = itemView.findViewById(R.id.ivPostImage)
@@ -69,11 +65,11 @@ class PostAdapter(private var posts: List<Post>) :
 
         holder.tvUsername.text = post.username
 
-        countLikes(post.postId) { numLikes ->
+        FirestoreUtils.countLikes(post.postId) { numLikes ->
             holder.tvNumLikes.text = numLikes.toString()
         }
 
-        countComments(post.postId) { numComments ->
+        FirestoreUtils.countComments(post.postId) { numComments ->
             holder.tvNumComments.text = numComments.toString()
         }
 
@@ -119,7 +115,7 @@ class PostAdapter(private var posts: List<Post>) :
                         holder.btnLike.setImageResource(R.drawable.ic_like_unfilled)
 
                         // reset the like count
-                        countLikes(post.postId) { numLikes ->
+                        FirestoreUtils.countLikes(post.postId) { numLikes ->
                             holder.tvNumLikes.text = numLikes.toString()
                         }
                     }
@@ -137,7 +133,7 @@ class PostAdapter(private var posts: List<Post>) :
                         holder.btnLike.setImageResource(R.drawable.ic_like_filled)
 
                         // reset the like count
-                        countLikes(post.postId) { numLikes ->
+                        FirestoreUtils.countLikes(post.postId) { numLikes ->
                             holder.tvNumLikes.text = numLikes.toString()
                         }
                     }
@@ -171,7 +167,7 @@ class PostAdapter(private var posts: List<Post>) :
             val rvComments = dialogView.findViewById<RecyclerView>(R.id.rvComments)
 
             // get comments for this post and set up the adapter for the recycler view
-            getComments(post.postId, context) { commentsList ->
+            FirestoreUtils.getComments(post.postId, context) { commentsList ->
                 val adapter = CommentAdapter(commentsList.toMutableList())
                 rvComments.adapter = adapter
                 rvComments.layoutManager = LinearLayoutManager(context)
@@ -189,7 +185,7 @@ class PostAdapter(private var posts: List<Post>) :
 
                 if (commentText.isNotEmpty())
                 {
-                    getCurrentUserProfile(currentUserId) { currentUser ->
+                    FirestoreUtils.getCurrentUserProfile(currentUserId) { currentUser ->
 
                         if (currentUser != null)
                         {
@@ -207,14 +203,14 @@ class PostAdapter(private var posts: List<Post>) :
                                     Log.d("PostAdapter", "Comment for post ${post.postId} added with ID: ${it.id}")
 
                                     // Re-fetch updated comments
-                                    getComments(post.postId, context) { updatedComments ->
+                                    FirestoreUtils.getComments(post.postId, context) { updatedComments ->
 
                                         val newAdapter = CommentAdapter(updatedComments.toMutableList())
                                         rvComments.adapter = newAdapter
                                     }
 
                                     // reset the comment counter
-                                    countComments(post.postId) { numComments ->
+                                    FirestoreUtils.countComments(post.postId) { numComments ->
                                         holder.tvNumComments.text = numComments.toString()
                                     }
 
@@ -257,119 +253,6 @@ class PostAdapter(private var posts: List<Post>) :
     fun updatePosts(newPosts: List<Post>) {
         posts = newPosts
         notifyDataSetChanged()
-    }
-
-    // Helper function to count likes for a post
-    private fun countLikes(postId: String, callback: (Int) -> Unit) {
-
-        // Count the number of likes for this post
-        firestore.collection("posts")
-            .document(postId)
-            .collection("likes")
-            .count()
-            .get(AggregateSource.SERVER)
-
-            .addOnSuccessListener { aggregateSnapshot ->
-
-                val numLikes = aggregateSnapshot.count
-
-                callback(numLikes.toInt())
-            }
-            .addOnFailureListener { exception ->
-
-                Log.e("PostAdapter", "Error counting likes: ", exception)
-
-                callback(0)
-            }
-    }
-
-    private fun countComments(postId: String, callback: (Int) -> Unit) {
-
-        // count number of comments for this post
-        firestore.collection("posts")
-            .document(postId)
-            .collection("comments")
-            .count()
-            .get(AggregateSource.SERVER)
-
-            .addOnSuccessListener { aggregateSnapshot ->
-
-                val numLikes = aggregateSnapshot.count
-                callback(numLikes.toInt())
-            }
-            .addOnFailureListener { exception ->
-
-                Log.e("PostAdapter", "Error counting comments: ", exception)
-                callback(0)
-            }
-    }
-
-    private fun getComments(postId: String, context: Context, callback: (List<Comment>) -> Unit)
-    {
-        firestore.collection("posts")
-            .document(postId)
-            .collection("comments")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .get()
-
-            .addOnSuccessListener { querySnapshot ->
-
-                val comments = querySnapshot.documents.mapNotNull { it.toObject(Comment::class.java) }
-
-                // if there are no comments, return a list with one empty comment
-                if (comments.isEmpty())
-                {
-                    callback(
-                        listOf(
-                            Comment(
-                                userId = "",
-                                commentText = "",
-                                username = "No Comments, be the first to add one"
-                            )
-                        )
-                    )
-
-                    return@addOnSuccessListener
-                }
-
-                callback(comments)
-            }
-
-            .addOnFailureListener { exception ->
-
-                Log.e("PostAdapter", "Error loading comments", exception)
-
-                Toast.makeText(context, "Failed to load comments", Toast.LENGTH_SHORT).show()
-
-                callback(emptyList())
-            }
-    }
-
-    private fun getCurrentUserProfile(userId: String, callback: (User?) -> Unit)
-    {
-        firestore.collection("users")
-            .document(userId)
-            .get()
-
-            .addOnSuccessListener { documentSnapshot ->
-
-                // cast doc to user object
-                val user = documentSnapshot.toObject(User::class.java)
-
-                if (user != null)
-                {
-                    callback(user)
-                }
-                else
-                {
-                    callback(null)
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("PostAdapter", "Error loading user profile", exception)
-                callback(null)
-            }
-
     }
 
 }
