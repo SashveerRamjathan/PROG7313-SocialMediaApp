@@ -21,6 +21,8 @@ import androidx.lifecycle.lifecycleScope
 import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -33,8 +35,11 @@ import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
  // import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class CreatePostActivity : AppCompatActivity()
 {
@@ -48,6 +53,7 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+    private lateinit var cgPostTags: ChipGroup
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -75,6 +81,7 @@ class CreatePostActivity : AppCompatActivity()
         btnCreatePost = binding.btnCreatePost
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
+        cgPostTags = binding.cgPostTags
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
@@ -99,7 +106,19 @@ class CreatePostActivity : AppCompatActivity()
             install(Storage)
         }
 
-        // Set up OnClickListener
+        val predefinedTags = listOf("Android", "Firebase", "Kotlin", "Jetpack", "UI/UX")
+
+        for (tag in predefinedTags) {
+            val chip = Chip(this).apply {
+                text = tag
+                isCheckable = true
+                isClickable = true
+            }
+            cgPostTags.addView(chip)
+        }
+
+
+        // Set up OnClickListeners
         setUpOnClickListener(supabaseClient)
     }
 
@@ -165,8 +184,10 @@ class CreatePostActivity : AppCompatActivity()
                                 // get user ID
                                 val userId = user.uid
 
-                                // get the user from firestore
-                                val userDoc = firestore.collection("users").document(userId).get().await()
+                                val userDoc = withContext(Dispatchers.IO) {
+                                    firestore.collection("users").document(userId).get().await()
+                                }
+
 
                                 // check the document exists
                                 if (!userDoc.exists())
@@ -178,6 +199,9 @@ class CreatePostActivity : AppCompatActivity()
                                 // get the username
                                 val username = userDoc.getString("username") ?: ""
 
+                                // get the selected tags
+                                val tags = getSelectedTags()
+
                                 // create a post object
                                 val post = Post(
                                     postId = postID,
@@ -185,7 +209,8 @@ class CreatePostActivity : AppCompatActivity()
                                     imageUrl = imageUrl,
                                     caption = caption,
                                     timestamp = Timestamp.now(),
-                                    username = username
+                                    username = username,
+                                    tags = tags
                                 )
 
                                 // add post to firestore
@@ -262,6 +287,23 @@ class CreatePostActivity : AppCompatActivity()
 
     }
 
+    fun getSelectedTags(): List<String>
+    {
+        val selectedTags = mutableListOf<String>()
+
+        for (i in 0 until cgPostTags.childCount)
+        {
+            val chip = cgPostTags.getChildAt(i) as Chip
+
+            if (chip.isChecked)
+            {
+                selectedTags.add(chip.text.toString())
+            }
+        }
+        return selectedTags
+    }
+
+
     // region Supabase Methods
 
     // Upload image to Supabase Storage and return the public URL
@@ -299,14 +341,7 @@ class CreatePostActivity : AppCompatActivity()
         }
     }
 
-    private fun generatePostID(): String
-    {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-
-        return (1..10)
-            .map { allowedChars.random() }
-            .joinToString("")
-    }
+    private fun generatePostID(): String = UUID.randomUUID().toString()
     // endregion
 
     // region Image Picker Methods
