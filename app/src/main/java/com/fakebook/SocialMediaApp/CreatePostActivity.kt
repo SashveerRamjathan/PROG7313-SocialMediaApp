@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -48,6 +49,7 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+    private lateinit var btnBack: ImageButton
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -75,6 +77,7 @@ class CreatePostActivity : AppCompatActivity()
         btnCreatePost = binding.btnCreatePost
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
+        btnBack = binding.btnBack
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
@@ -102,6 +105,10 @@ class CreatePostActivity : AppCompatActivity()
 
     private fun setUpOnClickListener(supabase: SupabaseClient)
     {
+        btnBack.setOnClickListener {
+            finish()
+        }
+
         btnAddPostPicture.setOnClickListener {
 
             MaterialAlertDialogBuilder(this)
