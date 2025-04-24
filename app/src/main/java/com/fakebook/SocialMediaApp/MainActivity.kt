@@ -106,19 +106,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpOnClickListener() {
+        // Set Up FAB onClickListener
+        binding.fabPost.setOnClickListener {
+            startActivity(Intent(this, CreatePostActivity::class.java))
+        }
 
         // Set up Bottom Navigation View onClickListener
         bnvNavbar.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.miHome -> true
-
-                R.id.miPost -> {
-
-                    // navigate to create post activity
-                    startActivity(Intent(this, CreatePostActivity::class.java))
-                    finish()
-                    true
-                }
 
                 R.id.miProfile -> {
 

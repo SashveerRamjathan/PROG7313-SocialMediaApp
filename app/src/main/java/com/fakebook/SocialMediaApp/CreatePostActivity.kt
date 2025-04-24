@@ -52,7 +52,7 @@ class CreatePostActivity : AppCompatActivity()
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    // Firestore
+    // FireStore
     private lateinit var firestore: FirebaseFirestore
 
     // Image for the selected post picture
@@ -79,11 +79,8 @@ class CreatePostActivity : AppCompatActivity()
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        // Initialize Firestore
+        // Initialize FireStore
         firestore = FirebaseFirestore.getInstance()
-
-        // highlight the post menu item
-        bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
 
         // region Supabase Credentials
         val supabaseUrl = getString(R.string.supabase_url)
@@ -244,8 +241,6 @@ class CreatePostActivity : AppCompatActivity()
                     finish()
                     true
                 }
-
-                R.id.miPost -> true
 
                 R.id.miProfile -> {
 

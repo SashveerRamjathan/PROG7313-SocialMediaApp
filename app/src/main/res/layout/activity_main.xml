@@ -35,6 +35,14 @@
             tools:ignore="SpeakableTextPresentCheck"
             tools:listitem="@layout/item_post" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_post"
+            tools:ignore="ContentDescription,RtlHardcoded,ImageContrastCheck,SpeakableTextPresentCheck" />
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
