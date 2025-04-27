@@ -31,8 +31,11 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
+import io.noties.markwon.editor.MarkwonEditor
+import io.noties.markwon.editor.MarkwonEditorTextWatcher
  // import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -99,12 +102,18 @@ class CreatePostActivity : AppCompatActivity()
             install(Storage)
         }
 
+        // Implement Markdown Format
+        val markwon = Markwon.create(this)
+        val editor = MarkwonEditor.create(markwon)
+        etCaption.addTextChangedListener(
+            MarkwonEditorTextWatcher.withProcess(editor)
+        )
+
         // Set up OnClickListener
         setUpOnClickListener(supabaseClient)
     }
 
-    private fun setUpOnClickListener(supabase: SupabaseClient)
-    {
+    private fun setUpOnClickListener(supabase: SupabaseClient) {
         btnAddPostPicture.setOnClickListener {
 
             MaterialAlertDialogBuilder(this)
@@ -265,8 +274,7 @@ class CreatePostActivity : AppCompatActivity()
     // region Supabase Methods
 
     // Upload image to Supabase Storage and return the public URL
-    private suspend fun uploadImageToStorage(supabase: SupabaseClient): String
-    {
+    private suspend fun uploadImageToStorage(supabase: SupabaseClient): String {
         try
         {
             // check if post ID is not empty and image is not empty
@@ -299,8 +307,7 @@ class CreatePostActivity : AppCompatActivity()
         }
     }
 
-    private fun generatePostID(): String
-    {
+    private fun generatePostID(): String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
 
         return (1..10)

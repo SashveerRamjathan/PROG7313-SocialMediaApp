@@ -67,4 +67,6 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:$supabaseVersion")
 
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    implementation("io.noties.markwon:editor:4.6.2")
 }

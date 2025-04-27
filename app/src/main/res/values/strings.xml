@@ -42,7 +42,7 @@
     <string name="create_post_title">Create New Post</string>
     <string name="post_image_desc">Post picture</string>
     <string name="choose_image">Choose Image</string>
-    <string name="caption_hint">Caption</string>
+    <string name="caption_hint">Description</string>
     <string name="create_post">Create Post</string>
     <string name="post_caption_placeholder">Post Caption</string>
     <string name="timestamp_placeholder">Timestamp</string>
