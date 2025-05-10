@@ -82,6 +82,16 @@
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cgPostTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleSelection="false"
+            app:selectionRequired="false"
+            app:chipSpacing="8dp"
+            android:layout_marginTop="16dp" />
+
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCreatePost"
             android:layout_width="match_parent"
