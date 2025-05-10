@@ -219,14 +219,6 @@ class ProfileActivity : AppCompatActivity() {
                     finish()
                     true
                 }
-                // Navigate to Post Activity
-                R.id.miPost -> {
-
-                    // navigate to create post activity
-                    startActivity(Intent(this, CreatePostActivity::class.java))
-                    finish()
-                    true
-                }
 
                 R.id.miProfile -> true
 

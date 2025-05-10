@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -48,11 +49,12 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+    private lateinit var btnBack: ImageButton
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    // Firestore
+    // FireStore
     private lateinit var firestore: FirebaseFirestore
 
     // Image for the selected post picture
@@ -75,15 +77,13 @@ class CreatePostActivity : AppCompatActivity()
         btnCreatePost = binding.btnCreatePost
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
+        btnBack = binding.btnBack
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        // Initialize Firestore
+        // Initialize FireStore
         firestore = FirebaseFirestore.getInstance()
-
-        // highlight the post menu item
-        bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
 
         // region Supabase Credentials
         val supabaseUrl = getString(R.string.supabase_url)
@@ -105,6 +105,10 @@ class CreatePostActivity : AppCompatActivity()
 
     private fun setUpOnClickListener(supabase: SupabaseClient)
     {
+        btnBack.setOnClickListener {
+            finish()
+        }
+
         btnAddPostPicture.setOnClickListener {
 
             MaterialAlertDialogBuilder(this)
@@ -244,8 +248,6 @@ class CreatePostActivity : AppCompatActivity()
                     finish()
                     true
                 }
-
-                R.id.miPost -> true
 
                 R.id.miProfile -> {
 
