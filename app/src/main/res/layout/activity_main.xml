@@ -27,13 +27,28 @@
             android:textStyle="bold"
             android:layout_marginBottom="10dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPosts"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:listitem="@layout/item_post" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPosts"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:listitem="@layout/item_post" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+      
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_post"
+            tools:ignore="ContentDescription,RtlHardcoded,ImageContrastCheck,SpeakableTextPresentCheck" />
 
     </LinearLayout>
 

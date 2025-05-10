@@ -90,4 +90,5 @@
     <string name="btn_update_password">Change Password</string>
     <string name="tv_current_password_hint">Current Password</string>
     <string name="tv_new_password_hint">New Password</string>
+    <string name="dark_mode">Dark Mode</string>
 </resources>

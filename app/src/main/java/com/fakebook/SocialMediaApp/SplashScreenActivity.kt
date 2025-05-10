@@ -1,12 +1,14 @@
 package com.fakebook.SocialMediaApp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.fakebook.SocialMediaApp.databinding.ActivitySplashScreenBinding
@@ -29,11 +31,14 @@ class SplashScreenActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        val prefs = getSharedPreferences("MODE", MODE_PRIVATE)
+        val isNight = prefs.getBoolean("night", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isNight)
+                AppCompatDelegate.MODE_NIGHT_YES
+            else
+                AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()

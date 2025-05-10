@@ -2,6 +2,7 @@ package com.fakebook.SocialMediaApp
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -11,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fakebook.SocialMediaApp.adapters.ProfileAdapter
@@ -18,6 +20,7 @@ import com.fakebook.SocialMediaApp.databinding.ActivityProfileBinding
 import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.models.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -44,6 +47,10 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvBio: TextView
     private lateinit var rvProfilePosts: RecyclerView
     private lateinit var bnvNavbar: BottomNavigationView
+
+    // Themes
+    private val sharedPreferences: SharedPreferences by lazy { getSharedPreferences("MODE", MODE_PRIVATE) }
+    private val editor: SharedPreferences.Editor by lazy { sharedPreferences.edit() }
     // endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,9 +140,23 @@ class ProfileActivity : AppCompatActivity() {
             dialog.show()
 
             // access views from dialog
+            val switchDarkMode = dialogView.findViewById<SwitchMaterial>(R.id.switchDarkMode)
             val btnChangePassword = dialogView.findViewById<Button>(R.id.btnChangePassword)
             val btnUpdateProfileInfo = dialogView.findViewById<Button>(R.id.btnUpdateProfileInfo)
             val btnSignOut = dialogView.findViewById<Button>(R.id.btnSignOut)
+
+            // Set switch state based on shared preferences
+            switchDarkMode.isChecked = sharedPreferences.getBoolean("night", false)
+
+            switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+                editor.putBoolean("night", isChecked).apply()
+                AppCompatDelegate.setDefaultNightMode(
+                    if (isChecked)
+                        AppCompatDelegate.MODE_NIGHT_YES
+                    else
+                        AppCompatDelegate.MODE_NIGHT_NO
+                )
+            }
 
             btnUpdateProfileInfo.setOnClickListener {
 
@@ -195,14 +216,6 @@ class ProfileActivity : AppCompatActivity() {
                 // Navigate to Home Activity
                 R.id.miHome -> {
                     startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                    true
-                }
-                // Navigate to Post Activity
-                R.id.miPost -> {
-
-                    // navigate to create post activity
-                    startActivity(Intent(this, CreatePostActivity::class.java))
                     finish()
                     true
                 }

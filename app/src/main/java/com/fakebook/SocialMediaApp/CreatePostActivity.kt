@@ -1,5 +1,6 @@
 package com.fakebook.SocialMediaApp
 
+// import io.github.jan.supabase.storage.upload
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,8 +20,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
+import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -28,16 +30,15 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.jan.supabase.SupabaseClient
-import java.io.ByteArrayOutputStream
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
- // import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
@@ -53,12 +54,13 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnCreatePost: Button
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
+    private lateinit var btnBack: ImageButton
     private lateinit var cgPostTags: ChipGroup
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
 
-    // Firestore
+    // FireStore
     private lateinit var firestore: FirebaseFirestore
 
     // Image for the selected post picture
@@ -81,16 +83,14 @@ class CreatePostActivity : AppCompatActivity()
         btnCreatePost = binding.btnCreatePost
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
+        btnBack = binding.btnBack
         cgPostTags = binding.cgPostTags
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
-        // Initialize Firestore
+        // Initialize FireStore
         firestore = FirebaseFirestore.getInstance()
-
-        // highlight the post menu item
-        bnvNavbar.menu.findItem(R.id.miPost).isChecked = true
 
         // region Supabase Credentials
         val supabaseUrl = getString(R.string.supabase_url)
@@ -124,6 +124,10 @@ class CreatePostActivity : AppCompatActivity()
 
     private fun setUpOnClickListener(supabase: SupabaseClient)
     {
+        btnBack.setOnClickListener {
+            finish()
+        }
+
         btnAddPostPicture.setOnClickListener {
 
             MaterialAlertDialogBuilder(this)
@@ -269,8 +273,6 @@ class CreatePostActivity : AppCompatActivity()
                     finish()
                     true
                 }
-
-                R.id.miPost -> true
 
                 R.id.miProfile -> {
 
