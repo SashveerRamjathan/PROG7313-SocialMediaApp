@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fakebook.SocialMediaApp.adapters.PostAdapter
 import com.fakebook.SocialMediaApp.databinding.ActivityMainBinding
 import com.fakebook.SocialMediaApp.models.Post
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bnvNavbar: BottomNavigationView
     private lateinit var rvPosts: RecyclerView
     private lateinit var postAdapter: PostAdapter
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -62,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize View Components
         bnvNavbar = binding.bnvNavbar
         rvPosts = binding.rvPosts
+        swipeRefreshLayout = binding.swipeRefresh
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
@@ -80,6 +83,12 @@ class MainActivity : AppCompatActivity() {
 
         // Load Posts from FireStore
         loadPosts()
+
+        // Set up SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            loadPosts()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun loadPosts() {
