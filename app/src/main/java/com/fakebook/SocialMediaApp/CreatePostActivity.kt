@@ -1,5 +1,6 @@
 package com.fakebook.SocialMediaApp
 
+// import io.github.jan.supabase.storage.upload
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -18,23 +19,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.fakebook.SocialMediaApp.models.Post
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
+import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.jan.supabase.SupabaseClient
-import java.io.ByteArrayOutputStream
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
- // import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 
 class CreatePostActivity : AppCompatActivity()
 {
