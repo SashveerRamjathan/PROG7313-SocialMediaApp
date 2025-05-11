@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -140,6 +141,11 @@ class MainActivity : AppCompatActivity() {
         bnvNavbar.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.miHome -> true
+
+                R.id.miSearch -> {
+                    Toast.makeText(this, "Search coming soon", Toast.LENGTH_SHORT).show()
+                    true
+                }
 
                 R.id.miProfile -> {
 
