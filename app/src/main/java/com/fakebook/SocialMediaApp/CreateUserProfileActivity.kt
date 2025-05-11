@@ -19,18 +19,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.fakebook.SocialMediaApp.databinding.ActivityCreateUserProfileBinding
+import com.fakebook.SocialMediaApp.helpers.SupabaseUtils
 import com.fakebook.SocialMediaApp.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.storage
-import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
@@ -95,25 +90,15 @@ class CreateUserProfileActivity : AppCompatActivity() {
             return  // Prevent further execution
         }
 
-        // Supabase Credentials
-        val supabaseUrl = getString(R.string.supabase_url)
-        val supabaseKey = getString(R.string.supabase_api_key)
+        // Initialize Supabase Client
+        SupabaseUtils.init(this)
 
-        // Supabase client
-        val supabaseClient = createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey
-        ) {
-            install(Postgrest)
-            install(Storage)
-        }
-
-        setOnClickListeners(email, password, supabaseClient)
+        setOnClickListeners(email, password)
 
 
     }
 
-    private fun setOnClickListeners(email: String, password: String, supabaseClient: SupabaseClient)
+    private fun setOnClickListeners(email: String, password: String)
     {
         btnAddProfilePicture.setOnClickListener {
             MaterialAlertDialogBuilder(this)
@@ -165,7 +150,7 @@ class CreateUserProfileActivity : AppCompatActivity() {
 
                         lifecycleScope.launch {
 
-                            val imageUrl = uploadImageToStorage(userId, supabaseClient)
+                            val imageUrl = SupabaseUtils.uploadProfileImageToStorage(userId, image)
 
                             // check if link is not empty
                             if (imageUrl.isNotBlank())
@@ -269,45 +254,6 @@ class CreateUserProfileActivity : AppCompatActivity() {
                 callback(null)  // Return null if registration fails
             }
     }
-
-    // region Supabase Methods
-
-    // Upload image to Supabase Storage and return the public URL
-    private suspend fun uploadImageToStorage(userId: String, supabaseClient: SupabaseClient): String
-    {
-        try
-        {
-            // check if post ID is not empty and image is not empty
-            if (userId.isNotEmpty() && image.isNotEmpty())
-            {
-                // Initialize the storage bucket
-                val bucket = supabaseClient.storage.from(getString(R.string.supabase_user_profile_bucket_name))
-
-                // Upload the image to the specified file path within the bucket
-                bucket.upload(userId, image)
-                {
-                    upsert = false // Set to true to overwrite if the file already exists
-                    contentType = ContentType.Image.JPEG // Set the content type to JPEG
-                }
-
-                // Retrieve and return the public URL of the uploaded image
-                return bucket.publicUrl(userId)
-            }
-            else
-            {
-                // log the error
-                Log.e("CreatePostActivity", "User ID or image is empty")
-                return ""
-            }
-        } catch (e: Exception)
-        {
-            // log the error
-            Log.e("CreatePostActivity", "Error uploading image to Supabase", e)
-            return ""
-        }
-    }
-
-    // endregion
 
     // region Image Picker Methods
 
