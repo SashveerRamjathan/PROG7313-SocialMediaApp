@@ -23,7 +23,10 @@ import androidx.lifecycle.lifecycleScope
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
 import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,9 +36,12 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import io.ktor.http.ContentType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class CreatePostActivity : AppCompatActivity()
 {
@@ -50,6 +56,9 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var btnAddPostPicture: Button
     private lateinit var bnvNavbar: BottomNavigationView
     private lateinit var btnBack: ImageButton
+    private lateinit var cgPostTags: ChipGroup
+    private lateinit var etTags: EditText
+    private lateinit var tilTagInput: TextInputLayout
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -78,6 +87,9 @@ class CreatePostActivity : AppCompatActivity()
         btnAddPostPicture = binding.btnAddPostPicture
         bnvNavbar = binding.bnvNavbar
         btnBack = binding.btnBack
+        cgPostTags = binding.cgPostTags
+        etTags = binding.etTag
+        tilTagInput = binding.tilTagInput
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
@@ -99,7 +111,7 @@ class CreatePostActivity : AppCompatActivity()
             install(Storage)
         }
 
-        // Set up OnClickListener
+        // Set up OnClickListeners
         setUpOnClickListener(supabaseClient)
     }
 
@@ -137,6 +149,26 @@ class CreatePostActivity : AppCompatActivity()
                 .show()
         }
 
+        tilTagInput.setEndIconOnClickListener {
+            val tagText = etTags.text?.toString()?.trim()
+
+            if (!tagText.isNullOrEmpty()) {
+                if (cgPostTags.childCount >= 5) {
+                    Toast.makeText(this, "Maximum 5 tags allowed", Toast.LENGTH_SHORT).show()
+                    return@setEndIconOnClickListener
+                }
+
+                val chip = Chip(this).apply {
+                    text = tagText
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener { cgPostTags.removeView(this) }
+                }
+
+                cgPostTags.addView(chip)
+                etTags.setText("") // Clear input
+            }
+        }
+
         btnCreatePost.setOnClickListener {
 
             // get caption
@@ -169,8 +201,10 @@ class CreatePostActivity : AppCompatActivity()
                                 // get user ID
                                 val userId = user.uid
 
-                                // get the user from firestore
-                                val userDoc = firestore.collection("users").document(userId).get().await()
+                                val userDoc = withContext(Dispatchers.IO) {
+                                    firestore.collection("users").document(userId).get().await()
+                                }
+
 
                                 // check the document exists
                                 if (!userDoc.exists())
@@ -182,6 +216,9 @@ class CreatePostActivity : AppCompatActivity()
                                 // get the username
                                 val username = userDoc.getString("username") ?: ""
 
+                                // get the selected tags
+                                val tags = getAllTags()
+
                                 // create a post object
                                 val post = Post(
                                     postId = postID,
@@ -189,7 +226,8 @@ class CreatePostActivity : AppCompatActivity()
                                     imageUrl = imageUrl,
                                     caption = caption,
                                     timestamp = Timestamp.now(),
-                                    username = username
+                                    username = username,
+                                    tags = tags
                                 )
 
                                 // add post to firestore
@@ -264,6 +302,15 @@ class CreatePostActivity : AppCompatActivity()
 
     }
 
+    private fun getAllTags(): List<String>
+    {
+        return (0 until cgPostTags.childCount)
+            .mapNotNull { cgPostTags.getChildAt(it) as? Chip }
+            .map { it.text.toString() }
+    }
+
+
+
     // region Supabase Methods
 
     // Upload image to Supabase Storage and return the public URL
@@ -301,14 +348,7 @@ class CreatePostActivity : AppCompatActivity()
         }
     }
 
-    private fun generatePostID(): String
-    {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-
-        return (1..10)
-            .map { allowedChars.random() }
-            .joinToString("")
-    }
+    private fun generatePostID(): String = UUID.randomUUID().toString()
     // endregion
 
     // region Image Picker Methods

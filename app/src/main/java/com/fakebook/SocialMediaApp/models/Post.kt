@@ -8,5 +8,6 @@ data class Post(
     val imageUrl: String = "",
     val caption: String = "",
     val timestamp: Timestamp = Timestamp.now(),
-    val username: String = ""
+    val username: String = "",
+    val tags: List<String> = emptyList()
 )

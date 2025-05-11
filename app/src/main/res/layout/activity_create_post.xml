@@ -7,98 +7,140 @@
     android:layout_height="match_parent"
     tools:context=".CreatePostActivity">
 
-    <LinearLayout
+    <!-- Scrollable content -->
+    <ScrollView
+        android:id="@+id/svContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bnvNavbar">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+            <!-- Back Button and Title -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/back_button_desc"
+                    android:src="@drawable/ic_back_arrow_filled"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RedundantDescriptionCheck" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="29dp"
+                    android:layout_marginStart="60dp"
+                    android:text="@string/create_post_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/btnBack"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Image Preview -->
+            <ImageView
+                android:id="@+id/ivPostPic"
+                android:layout_width="312dp"
+                android:layout_height="279dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="32dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/back_button_desc"
-                android:src="@drawable/ic_back_arrow_filled"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TouchTargetSizeCheck,RedundantDescriptionCheck" />
+                android:contentDescription="@string/post_image_desc"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_default_image" />
 
-            <TextView
-                android:id="@+id/tvTitle"
+            <!-- Choose Image Button -->
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/btnAddPostPicture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="29dp"
-                android:layout_marginStart="60dp"
-                android:text="@string/create_post_title"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/btnBack"
-                app:layout_constraintTop_toTopOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:text="@string/choose_image"
+                app:iconTint="?attr/colorPrimary"
+                app:strokeColor="?attr/colorPrimary" />
 
-        <ImageView
-            android:id="@+id/ivPostPic"
-            android:layout_width="312dp"
-            android:layout_height="279dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="32dp"
-            android:contentDescription="@string/post_image_desc"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_default_image"
-            tools:ignore="ImageContrastCheck" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:id="@+id/btnAddPostPicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="12dp"
-            android:text="@string/choose_image"
-            app:iconTint="?attr/colorPrimary"
-            app:strokeColor="?attr/colorPrimary" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="@string/caption_hint">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCaption"
+            <!-- Caption Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="2"
-                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="12dp"
+                android:hint="@string/caption_hint">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCreatePost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/create_post"
-            tools:ignore="TouchTargetSizeCheck,VisualLintButtonSize" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="2"
+                    android:textColorHint="#546E7A"
+                    tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+            <!-- Chip Group -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgPostTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:chipSpacing="8dp"
+                app:singleSelection="false"
+                app:selectionRequired="false" />
 
+            <!-- Tag Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTagInput"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/hint_add_tag"
+                app:endIconDrawable="@drawable/ic_plus_filled"
+                app:endIconMode="custom"
+                app:endIconContentDescription="Add Tag">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Create Post Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreatePost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/create_post"
+                tools:ignore="VisualLintButtonSize" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bnvNavbar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
-        android:scrollIndicators="left"
         app:menu="@menu/main_navigation_menu"
         tools:ignore="VisualLintBottomNav" />
-
 </RelativeLayout>

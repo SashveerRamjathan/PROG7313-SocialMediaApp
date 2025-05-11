@@ -38,17 +38,11 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 tools:ignore="SpeakableTextPresentCheck"
-                tools:listitem="@layout/item_post" />
+                tools:listitem="@layout/item_post"
+                android:paddingBottom="80dp"
+                android:clipToPadding="false"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-      
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabPost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_post"
-            tools:ignore="ContentDescription,RtlHardcoded,ImageContrastCheck,SpeakableTextPresentCheck" />
 
     </LinearLayout>
 
@@ -60,5 +54,20 @@
         android:scrollIndicators="left"
         app:menu="@menu/main_navigation_menu"
         tools:ignore="VisualLintBottomNav" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/bnvNavbar"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/fab_cd_add_post_button"
+        android:src="@drawable/ic_post"
+        app:backgroundTint="#6A0DAD"
+        app:tint="@android:color/white"
+        tools:ignore="RedundantDescriptionCheck" />
+
 
 </RelativeLayout>
