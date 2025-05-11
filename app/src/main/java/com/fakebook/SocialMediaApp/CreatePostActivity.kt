@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.fakebook.SocialMediaApp.databinding.ActivityCreatePostBinding
+import com.fakebook.SocialMediaApp.helpers.SupabaseUtils
 import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
@@ -97,25 +98,14 @@ class CreatePostActivity : AppCompatActivity()
         // Initialize FireStore
         firestore = FirebaseFirestore.getInstance()
 
-        // region Supabase Credentials
-        val supabaseUrl = getString(R.string.supabase_url)
-        val supabaseKey = getString(R.string.supabase_api_key)
-        //endregion
-
-        // Supabase client
-        val supabaseClient = createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey
-        ) {
-            install(Postgrest)
-            install(Storage)
-        }
+        // Initialize Supabase Client
+        SupabaseUtils.init(this)
 
         // Set up OnClickListeners
-        setUpOnClickListener(supabaseClient)
+        setUpOnClickListener()
     }
 
-    private fun setUpOnClickListener(supabase: SupabaseClient)
+    private fun setUpOnClickListener()
     {
         btnBack.setOnClickListener {
             finish()
@@ -187,7 +177,7 @@ class CreatePostActivity : AppCompatActivity()
                 {
                     // upload image to storage
                     lifecycleScope.launch {
-                        val imageUrl = uploadImageToStorage(supabase)
+                        val imageUrl = SupabaseUtils.uploadPostImageToStorage(postID, image)
 
                         // check if link is not empty
                         if (imageUrl.isNotBlank())
@@ -307,45 +297,6 @@ class CreatePostActivity : AppCompatActivity()
         return (0 until cgPostTags.childCount)
             .mapNotNull { cgPostTags.getChildAt(it) as? Chip }
             .map { it.text.toString() }
-    }
-
-
-
-    // region Supabase Methods
-
-    // Upload image to Supabase Storage and return the public URL
-    private suspend fun uploadImageToStorage(supabase: SupabaseClient): String
-    {
-        try
-        {
-            // check if post ID is not empty and image is not empty
-            if (postID.isNotEmpty() && image.isNotEmpty())
-            {
-                // Initialize the storage bucket
-                val bucket = supabase.storage.from(getString(R.string.supabase_post_bucket_name))
-
-                // Upload the image to the specified file path within the bucket
-                bucket.upload(postID, image)
-                {
-                    upsert = false // Set to true to overwrite if the file already exists
-                    contentType = ContentType.Image.JPEG // Set the content type to JPEG
-                }
-
-                // Retrieve and return the public URL of the uploaded image
-                return bucket.publicUrl(postID)
-            }
-            else
-            {
-                // log the error
-                Log.e("CreatePostActivity", "Post ID or image is empty")
-                return ""
-            }
-        } catch (e: Exception)
-        {
-            // log the error
-            Log.e("CreatePostActivity", "Error uploading image to Supabase", e)
-            return ""
-        }
     }
 
     private fun generatePostID(): String = UUID.randomUUID().toString()
