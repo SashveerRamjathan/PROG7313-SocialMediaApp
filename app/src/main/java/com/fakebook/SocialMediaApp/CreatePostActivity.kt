@@ -26,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -56,6 +57,8 @@ class CreatePostActivity : AppCompatActivity()
     private lateinit var bnvNavbar: BottomNavigationView
     private lateinit var btnBack: ImageButton
     private lateinit var cgPostTags: ChipGroup
+    private lateinit var etTags: EditText
+    private lateinit var tilTagInput: TextInputLayout
 
     // Firebase Authentication
     private lateinit var auth: FirebaseAuth
@@ -85,6 +88,8 @@ class CreatePostActivity : AppCompatActivity()
         bnvNavbar = binding.bnvNavbar
         btnBack = binding.btnBack
         cgPostTags = binding.cgPostTags
+        etTags = binding.etTag
+        tilTagInput = binding.tilTagInput
 
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
@@ -105,18 +110,6 @@ class CreatePostActivity : AppCompatActivity()
             install(Postgrest)
             install(Storage)
         }
-
-        val predefinedTags = listOf("Android", "Firebase", "Kotlin", "Jetpack", "UI/UX")
-
-        for (tag in predefinedTags) {
-            val chip = Chip(this).apply {
-                text = tag
-                isCheckable = true
-                isClickable = true
-            }
-            cgPostTags.addView(chip)
-        }
-
 
         // Set up OnClickListeners
         setUpOnClickListener(supabaseClient)
@@ -154,6 +147,26 @@ class CreatePostActivity : AppCompatActivity()
                     pickImageFromGallery()
                 }
                 .show()
+        }
+
+        tilTagInput.setEndIconOnClickListener {
+            val tagText = etTags.text?.toString()?.trim()
+
+            if (!tagText.isNullOrEmpty()) {
+                if (cgPostTags.childCount >= 5) {
+                    Toast.makeText(this, "Maximum 5 tags allowed", Toast.LENGTH_SHORT).show()
+                    return@setEndIconOnClickListener
+                }
+
+                val chip = Chip(this).apply {
+                    text = tagText
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener { cgPostTags.removeView(this) }
+                }
+
+                cgPostTags.addView(chip)
+                etTags.setText("") // Clear input
+            }
         }
 
         btnCreatePost.setOnClickListener {
@@ -204,7 +217,7 @@ class CreatePostActivity : AppCompatActivity()
                                 val username = userDoc.getString("username") ?: ""
 
                                 // get the selected tags
-                                val tags = getSelectedTags()
+                                val tags = getAllTags()
 
                                 // create a post object
                                 val post = Post(
@@ -289,21 +302,13 @@ class CreatePostActivity : AppCompatActivity()
 
     }
 
-    fun getSelectedTags(): List<String>
+    private fun getAllTags(): List<String>
     {
-        val selectedTags = mutableListOf<String>()
-
-        for (i in 0 until cgPostTags.childCount)
-        {
-            val chip = cgPostTags.getChildAt(i) as Chip
-
-            if (chip.isChecked)
-            {
-                selectedTags.add(chip.text.toString())
-            }
-        }
-        return selectedTags
+        return (0 until cgPostTags.childCount)
+            .mapNotNull { cgPostTags.getChildAt(it) as? Chip }
+            .map { it.text.toString() }
     }
+
 
 
     // region Supabase Methods
