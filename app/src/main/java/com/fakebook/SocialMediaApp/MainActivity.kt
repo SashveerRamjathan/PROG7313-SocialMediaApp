@@ -10,17 +10,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fakebook.SocialMediaApp.adapters.PostAdapter
 import com.fakebook.SocialMediaApp.databinding.ActivityMainBinding
+import com.fakebook.SocialMediaApp.helpers.EngagementUtils
+import com.fakebook.SocialMediaApp.helpers.RankingUtils
 import com.fakebook.SocialMediaApp.models.Post
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class MainActivity : AppCompatActivity() {
 
@@ -91,27 +96,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadPosts() {
-        // Query FireStore collection "posts" ordered by timestamp descending
-        firestore.collection("posts")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val posts = mutableListOf<Post>()
-                for (document in querySnapshot.documents) {
-                    document.toObject(Post::class.java)?.let { posts.add(it) }
-                }
-                // Update adapter with new list
-                postAdapter.updatePosts(posts)
+    private fun loadPosts()
+    {
+        lifecycleScope.launch {
+            try
+            {
+                val querySnapshot = firestore.collection("posts")
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+
+                val posts = querySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }
+
+                // Attach engagement (likes/comments)
+                val enrichedPosts = EngagementUtils.attachEngagementCountsToPosts(posts)
+
+                // Rank posts by score
+                val rankedPosts = RankingUtils.rankPosts(enrichedPosts)
+
+                postAdapter.updatePosts(rankedPosts)
+
             }
-            .addOnFailureListener { exception ->
-                Log.e("MainActivity", "Error loading posts", exception)
+            catch (e: Exception)
+            {
+                Log.e("MainActivity", "Error loading posts", e)
+
                 Snackbar.make(
                     findViewById(R.id.main),
                     "Failed to load posts",
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
+        }
     }
 
     private fun setUpOnClickListener() {
