@@ -38,6 +38,7 @@
     <string name="menu_item_home">Home</string>
     <string name="menu_item_post">Post</string>
     <string name="menu_item_profile">Profile</string>
+    <string name="menu_item_search_posts">Search Posts</string>
 
     <!-- Create Post -->
     <string name="create_post_title">Create New Post</string>

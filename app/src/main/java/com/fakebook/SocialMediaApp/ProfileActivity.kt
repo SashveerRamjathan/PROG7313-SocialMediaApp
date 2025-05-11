@@ -220,6 +220,11 @@ class ProfileActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.miSearch -> {
+                    Toast.makeText(this, "Search coming soon", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
                 R.id.miProfile -> true
 
                 else -> false
