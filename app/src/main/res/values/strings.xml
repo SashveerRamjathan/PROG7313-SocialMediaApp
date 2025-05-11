@@ -32,6 +32,7 @@
     <!-- Main - Home -->
     <string name="logout">Logout</string>
     <string name="main_view_title">Community Posts</string>
+    <string name="fab_cd_add_post_button">Add post button</string>
 
     <!-- Navigation Menu -->
     <string name="menu_item_home">Home</string>
