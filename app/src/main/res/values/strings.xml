@@ -75,6 +75,7 @@
     <string name="btn_update_profile_information">Update Profile</string>
     <string name="btn_change_password">Change Password</string>
     <string name="btn_sign_out">Sign Out</string>
+    <string name="dark_mode">Dark Mode</string>
 
     <!-- Logout Dialog -->
     <string name="tv_title">Are you sure you want to sign out?</string>
@@ -93,5 +94,8 @@
     <string name="btn_update_password">Change Password</string>
     <string name="tv_current_password_hint">Current Password</string>
     <string name="tv_new_password_hint">New Password</string>
-    <string name="dark_mode">Dark Mode</string>
+
+    <!-- Search Posts -->
+    <string name="hint_search_posts">Search posts</string>
+    <string name="tv_title_search_posts">Search Posts</string>
 </resources>

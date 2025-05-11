@@ -143,7 +143,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.miHome -> true
 
                 R.id.miSearch -> {
-                    Toast.makeText(this, "Search coming soon", Toast.LENGTH_SHORT).show()
+
+                    // navigate to search activity
+                    startActivity(Intent(this, PostSearchActivity::class.java))
+                    finish()
                     true
                 }
 
