@@ -6,5 +6,6 @@ data class User(
     val username: String = "",
     val fullName: String = "",
     val bio: String = "",
-    val profilePictureLink: String = ""
+    val profilePictureLink: String = "",
+    var score: Double = 0.0
 )
