@@ -221,7 +221,9 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
                 R.id.miSearch -> {
-                    Toast.makeText(this, "Search coming soon", Toast.LENGTH_SHORT).show()
+                    // Navigate to Search Activity
+                    startActivity(Intent(this, PostSearchActivity::class.java))
+                    finish()
                     true
                 }
 

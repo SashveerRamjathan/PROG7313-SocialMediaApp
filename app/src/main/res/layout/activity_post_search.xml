@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostSearchActivity">
+
+    <LinearLayout
+        android:id="@+id/llContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bnvNavbar"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/tv_title_search_posts"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Material Search Bar -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSearch"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:hint="@string/hint_search_posts"
+            app:endIconDrawable="@drawable/ic_nav_search"
+            app:endIconContentDescription="Search"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:textColorHint="#546E7A" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Search Results Info -->
+        <TextView
+            android:id="@+id/tvResultsInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </LinearLayout>
+
+    <!-- "No Posts" Text -->
+    <TextView
+        android:id="@+id/tvNoPosts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="180dp"
+        android:visibility="gone"
+        android:text="No posts to display"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray" />
+
+    <!-- Navigation Bar (unchanged) -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bnvNavbar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/main_navigation_menu"
+        tools:ignore="VisualLintBottomNav" />
+</RelativeLayout>
