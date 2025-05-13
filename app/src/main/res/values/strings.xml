@@ -95,7 +95,8 @@
     <string name="tv_current_password_hint">Current Password</string>
     <string name="tv_new_password_hint">New Password</string>
 
-    <!-- Search Posts -->
+    <!-- Search -->
     <string name="hint_search_posts">Search posts</string>
-    <string name="tv_title_search_posts">Search Posts</string>
+    <string name="hint_search_users">Search users</string>
+    <string name="nothing_to_display">Nothing to display</string>
 </resources>

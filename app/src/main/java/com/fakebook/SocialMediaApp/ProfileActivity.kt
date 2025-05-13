@@ -40,6 +40,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
 
     //View Components
+    private lateinit var btnSearch: ImageButton
     private lateinit var btnSettings: ImageButton
     private lateinit var ivProfilePicture: ImageView
     private lateinit var tvUsername: TextView
@@ -69,6 +70,7 @@ class ProfileActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         // Initialize View Components
+        btnSearch = binding.btnSearch
         btnSettings = binding.btnSettings
         ivProfilePicture = binding.ivProfilePicture
         tvUsername = binding.tvUsername
@@ -86,23 +88,27 @@ class ProfileActivity : AppCompatActivity() {
         // Highlight the Profile menu item
         bnvNavbar.menu.findItem(R.id.miProfile).isChecked = true
 
+        // Determine which user to show
+        val userId = intent.getStringExtra("USER_ID")
+            ?: auth.currentUser?.uid
+            ?: throw IllegalStateException("No user logged in")
+
         // Load user profile info and posts
-        loadUserProfile()
-        loadUserPosts(profilePostAdapter)
+        loadUserProfile(userId)
+        loadUserPosts(userId, profilePostAdapter)
 
         // Set up OnClickListener logout
         setUpOnClickListener()
     }
 
-    private fun loadUserProfile() {
-        val currentUserId = auth.currentUser?.uid ?: return
-        firestore.collection("users")
-            .document(currentUserId)
+    private fun loadUserProfile(userId: String) {
+        firestore
+            .collection("users")
+            .document(userId)
             .get()
-            .addOnSuccessListener { document ->
-                val user = document.toObject(User::class.java)
+            .addOnSuccessListener { doc ->
+                val user = doc.toObject(User::class.java)
                 user?.let {
-                    // Populate your header views
                     tvUsername.text = it.username
                     tvFullName.text = it.fullName
                     tvBio.text = it.bio
@@ -112,24 +118,35 @@ class ProfileActivity : AppCompatActivity() {
                         .into(ivProfilePicture)
                 }
             }
+            .addOnFailureListener { e ->
+                Log.e("ProfileActivity", "Error loading profile for $userId", e)
+                Toast.makeText(this, "Failed to load user", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun loadUserPosts(adapter: ProfileAdapter) {
-        val currentUserId = auth.currentUser?.uid ?: return
-        firestore.collection("posts")
-            .whereEqualTo("userId", currentUserId)
+    private fun loadUserPosts(userId: String, adapter: ProfileAdapter) {
+        firestore
+            .collection("posts")
+            .whereEqualTo("userId", userId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .get()
-            .addOnSuccessListener { querySnapshot ->
-                val posts = querySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }
+            .addOnSuccessListener { snap ->
+                val posts = snap.documents
+                    .mapNotNull { it.toObject(Post::class.java) }
                 adapter.updatePosts(posts)
             }
-            .addOnFailureListener {
-                Log.e("ProfileActivity", "Error loading user posts", it)
+            .addOnFailureListener { e ->
+                Log.e("ProfileActivity", "Error loading posts for $userId", e)
             }
     }
 
+
     private fun setUpOnClickListener() {
+        btnSearch.setOnClickListener {
+            startActivity(Intent(this, UserSearchActivity::class.java))
+            finish()
+        }
+
         btnSettings.setOnClickListener {
             // Show Dialogue
             val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
