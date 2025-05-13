@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,7 @@ class UserSearchActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
 
+    private lateinit var btnBack: ImageButton
     private lateinit var etSearch: TextInputEditText
     private lateinit var rvUsers: RecyclerView
     private lateinit var tvNoUsers: TextView
@@ -45,6 +47,7 @@ class UserSearchActivity : AppCompatActivity() {
         binding = ActivityUserSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        btnBack = binding.btnBack
         etSearch = binding.etSearch
         rvUsers = binding.rvUsers
         tvNoUsers = binding.tvNoUsers
@@ -60,6 +63,11 @@ class UserSearchActivity : AppCompatActivity() {
     }
 
     private fun setUpOnClickListeners() {
+        btnBack.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
+
         etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = etSearch.text.toString()
