@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fakebook.SocialMediaApp.adapters.UserAdapter
 import com.fakebook.SocialMediaApp.databinding.ActivityUserSearchBinding
@@ -128,7 +129,7 @@ class UserSearchActivity : AppCompatActivity() {
         if (users.isNotEmpty())
         {
             rvUsers.adapter = UserAdapter(users) { user -> onUserClicked(user) }
-            rvUsers.layoutManager = GridLayoutManager(this, 3)
+            rvUsers.layoutManager = LinearLayoutManager(this)
 
             rvUsers.visibility = View.VISIBLE
             tvNoUsers.visibility = View.GONE
